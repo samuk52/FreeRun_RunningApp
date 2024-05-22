@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "808725627891",
+    "project_id": "freerun-runningapp",
+    "storage_bucket": "freerun-runningapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808725627891:android:58ebfc77a931c504fe8886",
+        "android_client_info": {
+          "package_name": "it.insubria.freerun_runningapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-mC53Avz1vRC6KwuAqaC8V2IMWQT4nEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

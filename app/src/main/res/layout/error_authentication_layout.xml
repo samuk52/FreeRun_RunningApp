@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_toast_container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/red"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/errorTitleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/white"
+        />
+
+    <TextView
+        android:id="@+id/errorMessageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white" />
+</LinearLayout>
+
+
+
+
+<!-- <TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/error_banner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/red"
+    android:textColor="@android:color/white"
+    android:padding="16dp"
+    android:text="@string/ErrorSignUpMessage"
+    android:gravity="center"/> -->

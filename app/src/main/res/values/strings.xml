@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">FreeRun</string>
+    <string name="SignUpText">Sign Up</string>
+    <string name="LoginText">Log in</string>
+    <string name="AppNameText">FreeRun</string>
+    <string name="Name">Name</string>
+    <string name="Email">Email</string>
+    <string name="Password">Password</string>
+    <string name="SignUpFormText">Create an account</string>
+    <string name="PasswordInfoText">Password information</string>
+    <string name="LoginInFormText">Log in to FreeRun</string>
+    <string name="CloseText">Close</string>
+    <string name="PasswordInformationMessage">- The password must be 8-16 characters long. \n- The password must contain one lowercase letter. \n- The password must contain one uppercase letter. \n- the password must contain a single digit from 1 to 9. \n- The password must contain one special character.</string>
+    <string name="ErrorSignUpTitle">Error during registration</string>
+    <string name="ErrorSignUpMessage">Check the fields entered, verify that the password meets security requirements</string>
+    <string name="ErrorLogInTitle">Error during Log in</string>
+    <string name="ErrorLogInMessage">Check the fields entered</string>
+    <string name="WeightTextInfo">Enter your weight</string>
+    <string name="WeightText">Inserted weight:</string>
+    <string name="WeightInfoMessage">During registration, weight is requested in order to correctly calculate the calories consumed during the run.</string>
+    <string name="WeightInfoTitle">Weight</string>
+    <string name="ActivityText">Activity</string>
+    <string name="RunText">Run</string>
+    <string name="ProfileText">Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
