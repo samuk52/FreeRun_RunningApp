@@ -1,4 +1,4 @@
-package it.insubria.freerun_runningapp
+package it.insubria.freerun_runningapp.Managers
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult

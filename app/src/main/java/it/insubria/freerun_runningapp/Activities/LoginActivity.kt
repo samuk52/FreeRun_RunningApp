@@ -1,6 +1,6 @@
-package it.insubria.freerun_runningapp
+package it.insubria.freerun_runningapp.Activities
 
-import it.insubria.freerun_runningapp.AuthenticationManager
+import it.insubria.freerun_runningapp.Managers.AuthenticationManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

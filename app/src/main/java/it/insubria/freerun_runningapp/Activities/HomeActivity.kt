@@ -1,4 +1,4 @@
-package it.insubria.freerun_runningapp
+package it.insubria.freerun_runningapp.Activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -1,6 +1,6 @@
-package it.insubria.freerun_runningapp
+package it.insubria.freerun_runningapp.Activities
 
-import it.insubria.freerun_runningapp.AuthenticationManager
+import it.insubria.freerun_runningapp.Managers.AuthenticationManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,8 +13,8 @@ import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputLayout
+import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.R
-import it.insubria.freerun_runningapp.DatabaseManager
 
 // TODO modificare metodo showErrorSignUpMessage, il quale deve mostare o un banner o un Toast con il layout definito sta mattina
 class SignUpActivity : AppCompatActivity() {
