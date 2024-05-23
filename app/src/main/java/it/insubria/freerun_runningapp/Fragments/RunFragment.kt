@@ -1,5 +1,6 @@
 package it.insubria.freerun_runningapp.Fragments
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.fragment.app.Fragment
 
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -17,6 +19,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import it.insubria.freerun_runningapp.Activities.CountDownActivity
+import it.insubria.freerun_runningapp.Activities.MainActivity
 import it.insubria.freerun_runningapp.R
 
 class RunFragment : Fragment(){
@@ -64,6 +68,13 @@ class RunFragment : Fragment(){
         mapFragment?.getMapAsync(callback)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        // gestisco il pulsante che avvia la corsa.
+        view.findViewById<Button>(R.id.startRunButton).setOnClickListener {
+            //TODO open countdownActivity
+            openCountDownActivity()
+        }
+
     }
 
     private fun getCurrentPosition(fromMapReadyCallback: Boolean){
@@ -89,5 +100,10 @@ class RunFragment : Fragment(){
                 locationPermissionRequest.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
+    }
+
+    private fun openCountDownActivity(){
+        val intent = Intent(requireActivity(), CountDownActivity::class.java)
+        startActivity(intent)
     }
 }
