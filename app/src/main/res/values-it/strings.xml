@@ -23,4 +23,9 @@
     <string name="ActivityText">Attività</string>
     <string name="RunText">Run</string>
     <string name="ProfileText">Profile</string>
+    <string name="StartRunText">INIZIA</string>
+    <string name="EndActivityBtn">Termina attività</string>
+    <string name="EndActivtyMessage">Terminare l\'attività ?</string>
+    <string name="Yes">Si</string>
+    <string name="No">No</string>
 </resources>
