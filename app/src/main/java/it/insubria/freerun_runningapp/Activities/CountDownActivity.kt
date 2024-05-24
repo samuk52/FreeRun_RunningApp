@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -36,7 +37,7 @@ class CountDownActivity : AppCompatActivity() {
         val endActivityBtn = findViewById<Button>(R.id.endActivityBtn)
 
         playPauseBtn.setOnClickListener {
-            if(!countDownStopped){ // se il countDown non è attivo, lo fermo
+            if(!countDownStopped){ // se il countDown è attivo, lo fermo
                 playPauseBtn.setBackgroundResource(R.drawable.play) // modifico l'immagine del pulsante
                 endActivityBtn.visibility = Button.VISIBLE // rendo il pulsante per terminare l'attività visibile
                 stopCountDown() //fermo il countDown
@@ -84,15 +85,18 @@ class CountDownActivity : AppCompatActivity() {
 
     // metodo che mostra un dialog che chiede all'utente se vuole terminare l'attività
     private fun showEndActivityDialog(){
-        MaterialAlertDialogBuilder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
-            .setTitle(resources.getString(R.string.EndActivtyMessage))
-            .setNegativeButton(resources.getString(R.string.No)){dialog, which ->
-                dialog.cancel()
-            }
-            .setPositiveButton(resources.getString(R.string.Yes)){dialog, which ->
-                openHomeActivity()
-            }
-            .show()
+        // recupero la view
+        val view = LayoutInflater.from(this).inflate(R.layout.end_activity_dialog_layout, null)
+        // creo il dialog
+        val endActivityDialog = MaterialAlertDialogBuilder(this).setView(view).show()
+        // gestisco quando viene premuto il pulsante che termina l'attività
+        view.findViewById<Button>(R.id.endActivityDialognButton).setOnClickListener {
+            openHomeActivity()
+        }
+        // gestisco quando viene premuto il pulsante che chiude il dialog
+        view.findViewById<Button>(R.id.closeEndActivityDialogButton).setOnClickListener {
+            endActivityDialog.cancel()
+        }
     }
 
     // metodo che apre la home activity
