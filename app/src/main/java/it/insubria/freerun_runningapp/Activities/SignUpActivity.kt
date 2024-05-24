@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
@@ -15,6 +16,7 @@ import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputLayout
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.R
+import org.w3c.dom.Text
 
 // TODO modificare metodo showErrorSignUpMessage, il quale deve mostare o un banner o un Toast con il layout definito sta mattina
 class SignUpActivity : AppCompatActivity() {
@@ -112,7 +114,7 @@ class SignUpActivity : AppCompatActivity() {
     // funzione che viene invocata dall'it.insubria.freerun.managers.AuthenticationManager se la registrazione non è andata a buon fine
     // essa viene passata come argomento alla funzione createAccount dell'authentication manager.
     private fun showErrorSignUpMessage(){
-        // recupero la roorView
+        // recupero la rootView
         val rootView = findViewById<ViewGroup>(android.R.id.content)
         // set della view contenete il layout di errore
         val errorBanner = layoutInflater.inflate(R.layout.error_authentication_layout, rootView, false)
@@ -132,26 +134,46 @@ class SignUpActivity : AppCompatActivity() {
 
     // funzione che apre un dialog nel quale vengono spiegati i requisiti di sicurezza (informazioni) che deve avere la password
     private fun showPasswordInformation(){
-        MaterialAlertDialogBuilder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
-            .setIcon(R.drawable.password)
-            .setTitle(resources.getString(R.string.PasswordInfoText))
-            .setMessage(resources.getString(R.string.PasswordInformationMessage))
-            .setPositiveButton(resources.getString(R.string.CloseText)){ dialog, which->
-                dialog.cancel()
-            }
+
+        val infoView = LayoutInflater.from(this).inflate(R.layout.information_dialog_layout, null)
+
+        val titleText = infoView.findViewById<TextView>(R.id.infoDialogTitleText)
+        val messageText = infoView.findViewById<TextView>(R.id.infoDialogMessageText)
+        val closeDialogBtn = infoView.findViewById<Button>(R.id.closeInfoDialogButton)
+
+        titleText.text = resources.getString(R.string.PasswordInfoText)
+        messageText.text = resources.getString(R.string.PasswordInformationMessage)
+
+        val infoDialog = MaterialAlertDialogBuilder(this)
+            .setView(infoView)
             .show()
+
+        closeDialogBtn.setOnClickListener {
+            infoDialog.cancel()
+        }
+
     }
 
     // funzione che apre un dialog che spiega il perchè viene richiesto il peso.
     private fun showWeightInformation(){
-        MaterialAlertDialogBuilder(this, com.google.android.material.R.style.ThemeOverlay_Material3_MaterialAlertDialog_Centered)
-            .setIcon(R.drawable.weight)
-            .setTitle(resources.getString(R.string.WeightInfoTitle))
-            .setMessage(resources.getString(R.string.WeightInfoMessage))
-            .setPositiveButton(resources.getString(R.string.CloseText)){ dialog, which->
-                dialog.cancel()
-            }
+
+        val infoView = LayoutInflater.from(this).inflate(R.layout.information_dialog_layout, null)
+
+        val titleText = infoView.findViewById<TextView>(R.id.infoDialogTitleText)
+        val messageText = infoView.findViewById<TextView>(R.id.infoDialogMessageText)
+        val closeDialogBtn = infoView.findViewById<Button>(R.id.closeInfoDialogButton)
+
+        titleText.text = resources.getString(R.string.WeightInfoTitle)
+        messageText.text = resources.getString(R.string.WeightInfoMessage)
+
+        val infoDialog = MaterialAlertDialogBuilder(this)
+            .setView(infoView)
             .show()
+
+        closeDialogBtn.setOnClickListener {
+            infoDialog.cancel()
+        }
+
     }
 
 }
