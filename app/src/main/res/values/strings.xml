@@ -10,7 +10,7 @@
     <string name="PasswordInfoText">Password information</string>
     <string name="LoginInFormText">Log in to FreeRun</string>
     <string name="CloseText">Close</string>
-    <string name="PasswordInformationMessage">- The password must be 8-16 characters long. \n- The password must contain one lowercase letter. \n- The password must contain one uppercase letter. \n- the password must contain a single digit from 1 to 9. \n- The password must contain one special character.</string>
+    <string name="PasswordInformationMessage">- The password must be 8-16 characters long. \n- The password must contain one lowercase letter. \n- The password must contain one uppercase letter. \n- The password must contain a single digit from 1 to 9. \n- The password must contain one special character.</string>
     <string name="ErrorSignUpTitle">Error during registration</string>
     <string name="ErrorSignUpMessage">Check the fields entered, verify that the password meets security requirements</string>
     <string name="ErrorLogInTitle">Error during Log in</string>

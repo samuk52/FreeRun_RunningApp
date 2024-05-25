@@ -23,7 +23,6 @@ class CountDownActivity : AppCompatActivity() {
 
     private var countDown = 3
     private var countDownStopped = false
-    private var stopCountDown = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_count_down)
@@ -73,6 +72,7 @@ class CountDownActivity : AppCompatActivity() {
             }
             if(countDown == 0) {
                 // TODO avviare activity che monitora la corsa
+                openTrackingActivity()
             }
         }
     }
@@ -102,6 +102,12 @@ class CountDownActivity : AppCompatActivity() {
     // metodo che apre la home activity
     private fun openHomeActivity(){
         val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+    }
+
+    // metodo che apre la tracking activity
+    private fun openTrackingActivity(){
+        val intent = Intent(this, TrackingActivity::class.java)
         startActivity(intent)
     }
 
