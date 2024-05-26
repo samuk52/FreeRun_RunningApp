@@ -3,12 +3,12 @@ package it.insubria.freerun_runningapp.TrackingRunComponents
 import android.content.Context
 import android.location.Location
 import android.os.Looper
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.LatLng
 
 // TODO: aggiungere lista in cui memorizzare le posizioni rilevate, la quale verrà memorizzata nel db fairbase
 class LocationProvider(private val context: Context) {
@@ -16,12 +16,14 @@ class LocationProvider(private val context: Context) {
     private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private var currentLocation: Location? = null
-
+    private var previousLocation: Location? = null
+    private var totalDistanceInKm = 0f
+    private lateinit var locations: ArrayList<LatLng>
 
     init {
         createLocationRequest()
         createLocationCallback()
+        locations = ArrayList()
     }
 
     // metodo che crea la location request, la location request contiene i requisti per gli aggiornamenti
@@ -49,9 +51,23 @@ class LocationProvider(private val context: Context) {
                 o se ci sono stati ritardi nella consegna degli aggiornamenti.
                  */
                 for(location in locationResult.locations){
-                    currentLocation = location
-                    // DEBUG TODO remove
-                    println("${location.longitude} - ${location.latitude}")
+                    if(previousLocation != null){
+                        totalDistanceInKm += (previousLocation!!.distanceTo(location)) / 1000 // aggiorno la distanza percorsa
+
+                        // se la posizione rilevata è diversa dalla precedente posizione rilevata allora la aggiungo alla lista delle posizioni rilevate
+                        if(!isLocationEqual(previousLocation!!, location)){
+                            val latLng = LatLng(location.latitude, location.longitude)
+                            locations.add(latLng) // aggiungo la location alla lista della location rilevate
+                        }
+                    }
+
+                    // serve per memorizzare nella lista locations la prima posizione rilevata
+                    if(previousLocation == null){
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        locations.add(latLng)
+                    }
+
+                    previousLocation = location
                 }
             }
         }
@@ -74,9 +90,19 @@ class LocationProvider(private val context: Context) {
 
     // metodo che termina gli aggiornamenti della posizione
     fun stopLocationUpdates(){
-        // DEBUG
         println("-- STOP LOCATION UPDATES --")
+        previousLocation = null
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
+
+    // metodo che ritorna se le due posizioni passate come parametro sono uguali
+    private fun isLocationEqual(previousLocation: Location, currentLocation: Location): Boolean{
+        return (previousLocation.latitude == currentLocation.latitude) && (previousLocation.longitude == currentLocation.longitude)
+    }
+
+    // metodo che ritorna i chilometri percorsi dall'utente
+    private fun getKilometers(): String{
+        return String.format("%.2f", totalDistanceInKm)
     }
 
 }
