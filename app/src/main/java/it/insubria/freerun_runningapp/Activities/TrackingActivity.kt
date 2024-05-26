@@ -9,11 +9,15 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
+import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import it.insubria.freerun_runningapp.R
 import it.insubria.freerun_runningapp.Services.TrackingService
 
+//TODO 1.recuperare le textView
+// 2. sistemare forse il layout
 class TrackingActivity : AppCompatActivity() {
 
     private var trackingService: TrackingService? = null
@@ -37,14 +41,34 @@ class TrackingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
 
-        findViewById<Button>(R.id.startStopTrackingButton).setOnClickListener {
-            if(trackingStarted){
-                trackingService!!.stopTracking()
-                trackingStarted = false
-            }else{
-                trackingService!!.startTracking()
-                trackingStarted = true
-            }
+        // carico il layout del pulsante per mettere in pausa l'attività
+        val pauseButtonView = LayoutInflater.from(this).inflate(R.layout.pause_traking_button_layout, null)
+        // carico il layout del pulsante per riprendere l'attività, e del pulsante per terminare l'attività
+        val restartButtonView = LayoutInflater.from(this).inflate(R.layout.restart_tracking_button_layout, null)
+
+        // recupero il linear layout che si occupa di contenere le due view definite sopra
+        val startPauseTrackinglayout = findViewById<LinearLayout>(R.id.startPauseTrackingLayout)
+        startPauseTrackinglayout.addView(pauseButtonView)
+
+        // gestisco il pulsante che mette in pausa l'attività
+        pauseButtonView.findViewById<Button>(R.id.pauseTrackingButton).setOnClickListener {
+            trackingService!!.stopTracking()
+            trackingStarted = false //TODO forse rimuovere in quanto inutile
+            startPauseTrackinglayout.removeView(pauseButtonView)
+            startPauseTrackinglayout.addView(restartButtonView)
+        }
+
+        // gestisco il pulsante che riprende l'attività
+        restartButtonView.findViewById<Button>(R.id.restartTrackingButton).setOnClickListener {
+            trackingService!!.startTracking()
+            trackingStarted = true //TODO forse rimuovere in quanto inutile
+            startPauseTrackinglayout.removeView(restartButtonView)
+            startPauseTrackinglayout.addView(pauseButtonView)
+        }
+
+        // gestisco il pulsante che mette in termina l'attività
+        restartButtonView.findViewById<Button>(R.id.stopTrackingButton).setOnClickListener {
+            // TODO aprire dialog per confermare il termine dell'attività
         }
 
         requestNotificationPermission()
