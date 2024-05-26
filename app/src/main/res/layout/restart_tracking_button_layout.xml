@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_toast_container"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <Button
+        android:id="@+id/restartTrackingButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/play"
+        android:layout_gravity="center"/>
+
+    <Space
+        android:layout_width="12dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/stopTrackingButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/stop"
+        android:layout_gravity="center"/>
+
+</LinearLayout>
