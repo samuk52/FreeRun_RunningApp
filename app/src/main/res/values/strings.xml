@@ -27,4 +27,7 @@
     <string name="EndActivtyMessage">Finish the activity ?</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
+    <string name="TimeText">TIME</string>
+    <string name="KilometersText">KILOMETERS</string>
+    <string name="CaloriesText">CALORIES</string>
 </resources>
