@@ -13,6 +13,7 @@ class StopWatch {
     private var oldStopWatchTime = 0L
     private var started = false
 
+    // metodo che fa partire il cronometro
     fun start(){
         started = true
         val startTime = System.currentTimeMillis()
@@ -22,7 +23,7 @@ class StopWatch {
                 val currentTime = System.currentTimeMillis()
                 stopWatchTime = currentTime - startTime + oldStopWatchTime
                 // DEBUG
-                println(getFormattedStopWatchTime(stopWatchTime))
+                println(getFormattedStopWatchTime())
                 Thread.sleep(1000)
             }
             // DEBUG todo remove
@@ -31,15 +32,17 @@ class StopWatch {
 
     }
 
+    // metodo che mette in ferma il cronometro
     fun stop(){
         oldStopWatchTime = stopWatchTime
         started = false
     }
 
-    fun getFormattedStopWatchTime(millisecond: Long): String{
-        val hours = TimeUnit.MILLISECONDS.toHours(millisecond) % 24
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(millisecond) % 60
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(millisecond) % 60
+    // metodo che restituisco il tempo del cronometro
+    fun getFormattedStopWatchTime(): String{
+        val hours = TimeUnit.MILLISECONDS.toHours(stopWatchTime) % 24
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(stopWatchTime) % 60
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(stopWatchTime) % 60
         return "${if(hours < 10) "0" else ""}$hours:${if(minutes < 10) "0" else ""}$minutes:${if (seconds < 10) "0" else ""}$seconds"
     }
 
