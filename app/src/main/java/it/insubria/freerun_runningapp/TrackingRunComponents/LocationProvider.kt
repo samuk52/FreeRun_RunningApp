@@ -17,7 +17,7 @@ class LocationProvider(private val context: Context) {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var previousLocation: Location? = null
-    private var totalDistanceInKm = 0f
+    private var totalDistanceInMt = 0f
     private lateinit var locations: ArrayList<LatLng>
 
     init {
@@ -52,7 +52,7 @@ class LocationProvider(private val context: Context) {
                  */
                 for(location in locationResult.locations){
                     if(previousLocation != null){
-                        totalDistanceInKm += (previousLocation!!.distanceTo(location)) / 1000 // aggiorno la distanza percorsa
+                        totalDistanceInMt += previousLocation!!.distanceTo(location) // aggiorno la distanza percorsa
 
                         // se la posizione rilevata è diversa dalla precedente posizione rilevata allora la aggiungo alla lista delle posizioni rilevate
                         if(!isLocationEqual(previousLocation!!, location)){
@@ -101,8 +101,8 @@ class LocationProvider(private val context: Context) {
     }
 
     // metodo che ritorna i chilometri percorsi dall'utente
-    private fun getKilometers(): String{
-        return String.format("%.2f", totalDistanceInKm)
+    fun getDistanceInKm(): Float{
+        return totalDistanceInMt / 1000
     }
 
 }
