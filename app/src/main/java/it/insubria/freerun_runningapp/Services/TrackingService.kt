@@ -2,7 +2,6 @@ package it.insubria.freerun_runningapp.Services
 
 import android.app.Notification
 import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
@@ -12,11 +11,10 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.TrackingRunComponents.CaloriesCounter
 import it.insubria.freerun_runningapp.TrackingRunComponents.LocationProvider
+import it.insubria.freerun_runningapp.TrackingRunComponents.StepCounter
 import it.insubria.freerun_runningapp.TrackingRunComponents.StopWatch
 
 class TrackingService: Service(){
@@ -26,6 +24,8 @@ class TrackingService: Service(){
     private lateinit var notification: Notification
     private lateinit var stopWatch: StopWatch
     private lateinit var locationProvider: LocationProvider
+    private lateinit var stepCounter: StepCounter
+    private lateinit var caloriesCounter: CaloriesCounter
 
     class TrackingBinder(private val trackingService: TrackingService): Binder(){
         fun getService(): TrackingService{
@@ -37,6 +37,8 @@ class TrackingService: Service(){
         super.onCreate()
         stopWatch = StopWatch()
         locationProvider = LocationProvider(this)
+        stepCounter = StepCounter(this)
+        caloriesCounter = CaloriesCounter()
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
@@ -47,8 +49,8 @@ class TrackingService: Service(){
         return trackingBinder
     }
 
-    override fun unbindService(conn: ServiceConnection) {
-        super.unbindService(conn)
+    override fun onDestroy() {
+        super.onDestroy()
         stopTracking()
     }
 
@@ -56,12 +58,51 @@ class TrackingService: Service(){
     fun startTracking(){
         stopWatch.start() // avvio il cronometro
         locationProvider.startLocationUpdates()
+        // verifico se è presente il sensore che conta i passi
+        if(stepCounter.isStepSensorPresent()) {
+            stepCounter.start() // se è presente lo avvio
+        }
     }
 
-    // metodo che ferma il monitoraggio della corsa.
+    // metodo che mette in pausa il monitoraggio della corsa.
+    fun pauseTracking(){
+        stopWatch.stop() // fermo il cronometro
+        locationProvider.stopLocationUpdates() // TODO forse rimuovere da qui, e metterlo separato nel metodo unbind.
+        // verifico se è presente il sensore che conta i passi
+        if(stepCounter.isStepSensorPresent()) {
+            stepCounter.pause()
+        }
+    }
+
+    // metodo che termina il monitoraggio della corsa.
     fun stopTracking(){
         stopWatch.stop() // fermo il cronometro
         locationProvider.stopLocationUpdates() // TODO forse rimuovere da qui, e metterlo separato nel metodo unbind.
+        // verifico se è presente il sensore che conta i passi
+        if(stepCounter.isStepSensorPresent()) {
+            stepCounter.stop()
+        }
+    }
+
+    // funzione che restituisce il tempo del cronometro.
+    fun getTime(): String{
+        return stopWatch.getFormattedStopWatchTime()
+    }
+
+    // funzione che restituisce i chilometri percorsi.
+    fun getKilometres(): Float {
+        // se è presenta il sensore che conta i passi, restituisco la distanza calcolata da esso
+        // altrimenti restituisco la distanza calcolata con le posizioni rilevate
+        if (stepCounter.isStepSensorPresent()) {
+            return stepCounter.getDistanceInKm()
+        } else{
+            return locationProvider.getDistanceInKm()
+        }
+    }
+
+    // funzione che ritorna le calorie consumate durante la corsa.
+    fun getCalories(km: Float): Int{
+        return caloriesCounter.getCalories(km)
     }
 
     private fun makeForeground(){
