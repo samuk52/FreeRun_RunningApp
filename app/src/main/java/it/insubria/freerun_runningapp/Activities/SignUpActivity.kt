@@ -10,13 +10,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.NumberPicker
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputLayout
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.R
-import org.w3c.dom.Text
 
 // TODO modificare metodo showErrorSignUpMessage, il quale deve mostare o un banner o un Toast con il layout definito sta mattina
 class SignUpActivity : AppCompatActivity() {
@@ -35,15 +36,17 @@ class SignUpActivity : AppCompatActivity() {
         val nameTextField = findViewById<TextInputLayout>(R.id.nameTextField)
         val emailTextField = findViewById<TextInputLayout>(R.id.emailSignUp)
         val passwordTextField = findViewById<TextInputLayout>(R.id.passwordSignUp)
-        val weightText = findViewById<TextView>(R.id.weightText)
 
-        val weightSlider = findViewById<Slider>(R.id.weightSlider)
-        weightSlider.setLabelFormatter{ value ->
-            "$value Kg"
-        }
-        weightSlider.addOnChangeListener { slider, value, fromUser ->
-            weightText.text = "${value} Kg"
-        }
+        val integerWeightPicker = findViewById<NumberPicker>(R.id.integerWeightPicker)
+        integerWeightPicker.minValue = 0
+        integerWeightPicker.maxValue = 300
+        integerWeightPicker.value = 50
+
+        val decimalWeightPicker = findViewById<NumberPicker>(R.id.decimalWeightPicker)
+        decimalWeightPicker.minValue = 0
+        decimalWeightPicker.maxValue = 9
+
+        val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
 
         // gestisco il pulsante di chiusura del form di registrazione
         findViewById<Button>(R.id.closeSignUpButton).setOnClickListener{
@@ -62,28 +65,32 @@ class SignUpActivity : AppCompatActivity() {
 
         // gestisco il pulsante di registrazione
         findViewById<Button>(R.id.signUpButton).setOnClickListener {
+            val genderRadioButton = findViewById<RadioButton>(radioGroup.checkedRadioButtonId) // recupero il radio button selezionato
             signUp(
                 emailTextField.editText?.text.toString(),
                 passwordTextField.editText?.text.toString(),
                 nameTextField.editText?.text.toString(),
-                weightSlider.value
+                integerWeightPicker.value + (decimalWeightPicker.value / 10.0f),
+                genderRadioButton.text.toString()
             )
         }
     }
 
     // funzione per effettuare la registrazione
-    private fun signUp(email: String, password: String, name: String, weight: Float){
+    private fun signUp(email: String, password: String, name: String, weight: Float, gender: String){
         /*
         chiamo il metodo dell'authentication manager per effettuare la registrazione, esso restituisce un
         Task<AuthResult>? e lo utilizzo per chiamare un listener che verifichi se la registrazione è andata a buon fine o meno,
         oppure restituisce null sei uno o entrambi i parametri passati (email e password) sono vuoti.
          */
+        //DEBUT
+        println("--GENDER -> $gender")
         val authResult = authenticationManager.createAccount(email, password)
         if(authResult != null){
             authResult.addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     // se la registrazione è andata a buon fine, aggiungo il numero utente al database.
-                    databaseManager.addNewUserToDB(name, weight).addOnSuccessListener {
+                    databaseManager.addNewUserToDB(name, weight, gender).addOnSuccessListener {
                         // DEBUG todo rimuove
                         Log.d("SignUpActivity", "added user document for $email")
                     }
