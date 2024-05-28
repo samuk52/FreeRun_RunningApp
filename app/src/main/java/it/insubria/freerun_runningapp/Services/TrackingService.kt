@@ -11,6 +11,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.maps.model.LatLng
 import it.insubria.freerun_runningapp.R
 import it.insubria.freerun_runningapp.TrackingRunComponents.CaloriesCounter
 import it.insubria.freerun_runningapp.TrackingRunComponents.LocationProvider
@@ -98,6 +99,21 @@ class TrackingService: Service(){
         } else{
             return locationProvider.getDistanceInKm()
         }
+    }
+
+    // funzione che restituisce il passo medio
+    fun getAvgPace(): Float{
+        val minutes = stopWatch.getStopWatchTimeInMinutes()
+        if(stepCounter.isStepSensorPresent()){
+            return stepCounter.getAvgPace(minutes)
+        }else{
+            return locationProvider.getAvgPace(minutes)
+        }
+    }
+
+    // funzione che restituisce le posizioni rilevate durante la corsa.
+    fun getLocations(): ArrayList<LatLng>{
+        return locationProvider.getLocations()
     }
 
     // funzione che ritorna le calorie consumate durante la corsa.
