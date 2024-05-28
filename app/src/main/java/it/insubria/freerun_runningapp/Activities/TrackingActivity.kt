@@ -17,6 +17,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.insubria.freerun_runningapp.R
 import it.insubria.freerun_runningapp.Services.TrackingService
@@ -39,6 +40,10 @@ class TrackingActivity : AppCompatActivity() {
     private var bound = false // variabile che inidica se c'è qulche componente legato al servizio
 
     private lateinit var runDataUpdater: ExecutorService
+
+    private lateinit var time: String
+    private var km = 0f
+    private var calories = 0
 
     // stabilizzo la connessione con il servizio
     private val serviceConnection = object: ServiceConnection{
@@ -112,11 +117,10 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     private fun stopTrackingService(){
+        openTrackingRecapActivity(time, km, calories, trackingService!!.getAvgPace(), trackingService!!.getLocations())
         if(bound) {
             unbindService(serviceConnection)
         }
-        //DEBUG poi rimuovere e aprire l'activity corretta
-        startActivity(Intent(this, HomeActivity::class.java))
     }
 
     private fun pauseTacking(){
@@ -145,10 +149,9 @@ class TrackingActivity : AppCompatActivity() {
                 try {
                     if(trackingService != null){
                         // recupero i dati dal service
-                        val time = trackingService!!.getTime()
-                        val km = trackingService!!.getKilometres()
-                        // val calories = 0 // TODO recuperare le calorie correttamente
-                        val calories = trackingService!!.getCalories(km)
+                        time = trackingService!!.getTime()
+                        km = trackingService!!.getKilometres()
+                        calories = trackingService!!.getCalories(km)
 
                         // aggiorno l'interfaccia utente
                         Handler(Looper.getMainLooper()).post {
@@ -193,6 +196,18 @@ class TrackingActivity : AppCompatActivity() {
         view.findViewById<Button>(R.id.closeEndActivityDialogButton).setOnClickListener {
             endActivityDialog.cancel()
         }
+    }
+
+    // metodo che apre l'activity del recap della corsa.
+    private fun openTrackingRecapActivity(time: String, distance: Float, calories: Int, avgPace: Float, locations: ArrayList<LatLng>){
+        val recapTrackingIntent = Intent(this, TrackingRecapActivity::class.java)
+        // passo all'activity i vari dati
+        recapTrackingIntent.putExtra("time", time)
+        recapTrackingIntent.putExtra("distance", distance)
+        recapTrackingIntent.putExtra("avgPace", avgPace)
+        recapTrackingIntent.putExtra("calories", calories)
+        recapTrackingIntent.putExtra("locations", locations)
+        startActivity(recapTrackingIntent)
     }
 
     // metodo che richiede i permessi per le notifiche
