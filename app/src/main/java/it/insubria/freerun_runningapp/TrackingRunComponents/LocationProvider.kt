@@ -18,7 +18,7 @@ class LocationProvider(private val context: Context) {
     private lateinit var locationCallback: LocationCallback
     private var previousLocation: Location? = null
     private var totalDistanceInMt = 0f
-    private lateinit var locations: ArrayList<LatLng>
+    private var locations: ArrayList<LatLng>
 
     init {
         createLocationRequest()
@@ -103,6 +103,17 @@ class LocationProvider(private val context: Context) {
     // metodo che ritorna i chilometri percorsi dall'utente
     fun getDistanceInKm(): Float{
         return totalDistanceInMt / 1000
+    }
+
+    // funzione che ritorna il passo medio
+    fun getAvgPace(minute: Long): Float{
+        val distanceInKm = totalDistanceInMt / 1000
+        println("--AVG PACE => ${minute / distanceInKm}")
+        return minute / distanceInKm
+    }
+
+    fun getLocations(): ArrayList<LatLng>{
+        return locations
     }
 
 }
