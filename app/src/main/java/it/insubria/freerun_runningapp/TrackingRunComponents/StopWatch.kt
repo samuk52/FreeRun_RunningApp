@@ -46,4 +46,9 @@ class StopWatch {
         return "${if(hours < 10) "0" else ""}$hours:${if(minutes < 10) "0" else ""}$minutes:${if (seconds < 10) "0" else ""}$seconds"
     }
 
+    // funzione che restituisce il tempo del cronometro in minuti, per il calcolo del passo medio.
+    fun getStopWatchTimeInMinutes(): Long{
+        return TimeUnit.MILLISECONDS.toMinutes(stopWatchTime)
+    }
+
 }
