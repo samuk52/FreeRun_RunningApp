@@ -5,15 +5,32 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import it.insubria.freerun_runningapp.Managers.DatabaseManager
 
 class StepCounter(private val context: Context): SensorEventListener {
 
     //TODO recuperare il genere dell'utente dal database
-
+    private val databaseManager = DatabaseManager()
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val stepSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
     private var totalSteps = 0
     private var trackingStarted = false
+    private var avgStepLength = 0f // lunghezza passo medio
+
+    init {
+        databaseManager.getUserInfo().addOnSuccessListener { document ->
+            if(document.get("gender") != null) {
+                val gender = document.get("gender") as String
+                if(gender == "Man"){
+                    avgStepLength = 0.76f
+                }else if (gender == "Woman"){
+                    avgStepLength = 0.67f
+                }
+                //DEBUG
+                println("GENDER -> $gender")
+            }
+        }
+    }
 
     // metodo che viene chiamato, ogni qual volta viene rilevato un evento emesso dal sensore passato
     // al listener
@@ -56,9 +73,16 @@ class StepCounter(private val context: Context): SensorEventListener {
     fun getDistanceInKm(): Float{
         // TODO modificare, in quanto dipende dal genere, infatti se uomo moltiplichiamo i passi * 0.78
         //  se donna moltiplichiamo i passi * 0.70, quindi recuperare genere utente
-        val distanceInMt = totalSteps * 0.78
+        val distanceInMt = totalSteps * avgStepLength
         val distanceInKm = distanceInMt / 1000
         return distanceInKm.toFloat()
+    }
+
+    // funzione che ritorna il passo medio
+    fun getAvgPace(minute: Long): Float{
+        val distanceInMt = totalSteps * avgStepLength
+        val distanceInKm = distanceInMt / 1000
+        return (minute / distanceInKm).toFloat()
     }
 
 }
