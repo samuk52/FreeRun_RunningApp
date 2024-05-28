@@ -27,7 +27,12 @@
     <string name="EndActivtyMessage">Finish the activity ?</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <string name="TimeText">TIME</string>
-    <string name="KilometersText">KILOMETERS</string>
-    <string name="CaloriesText">CALORIES</string>
+    <string name="TimeText">Time</string>
+    <string name="KilometersText">Kilometers</string>
+    <string name="CaloriesText">Kilocalories</string>
+    <string name="AvgPaceText">Avg Pace</string>
+    <string name="SaveText">Save</string>
+    <string name="DistanceText">Distance</string>
+    <string name="ManText">Man</string>
+    <string name="WomanText">Woman</string>
 </resources>
