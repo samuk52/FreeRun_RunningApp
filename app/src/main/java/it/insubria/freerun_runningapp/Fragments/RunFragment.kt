@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import it.insubria.freerun_runningapp.Activities.CountDownActivity
 import it.insubria.freerun_runningapp.Activities.MainActivity
 import it.insubria.freerun_runningapp.R
+import java.lang.NullPointerException
 
 class RunFragment : Fragment(){
 
@@ -88,8 +89,17 @@ class RunFragment : Fragment(){
             googleMap.isMyLocationEnabled = true
             // sposto la camera di googleMaps sulla posizione corrente
             fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
-                if(task.isSuccessful){
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(task.result.latitude, task.result.longitude), 15f))
+                try {
+                    if(task.isSuccessful){
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(task.result.latitude, task.result.longitude), 15f))
+                    }
+                }catch (e: NullPointerException){
+                    // il recupero della posizione potrebbe restituisce una posizione nulla per un qualche motivo
+                    // se così succede, viene sollegata una NullPointerExcpetion quando vado a recuperare la
+                    // latitidine e la longitudine della posizione nel metodo moveCamera di googleMap, per questo
+                    // motivo gestisco l'eccezzione, facendo in modo che se viene sollevata cerco di recuperare di
+                    // nuovo la posizione
+                    getCurrentPosition(false)
                 }
             }
         }else{ // se l'utente non ha dato i permessi per la localizzazione, essi vengono richiesto
