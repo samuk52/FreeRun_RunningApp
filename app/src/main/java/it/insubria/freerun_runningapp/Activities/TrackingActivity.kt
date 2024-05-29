@@ -209,8 +209,19 @@ class TrackingActivity : AppCompatActivity() {
         recapTrackingIntent.putExtra("distance", distance)
         recapTrackingIntent.putExtra("avgPace", avgPace)
         recapTrackingIntent.putExtra("calories", calories)
-        recapTrackingIntent.putExtra("locations", locations)
+        recapTrackingIntent.putStringArrayListExtra("locations", serializeLatLngList(locations))
         startActivity(recapTrackingIntent)
+    }
+
+    // metodo che presa in input una lista di oggetti LatLng, la serializza in una lista di stringhe
+    // questa operazione è necessaria in quando il metodo dell'intent che permette di recuperare
+    // un oggetto serializzato richiede che il device abbiamo come sdk minimo il 33.
+    private fun serializeLatLngList(listToSerialize: ArrayList<LatLng>): ArrayList<String>{
+        val list = arrayListOf<String>()
+        for(item in listToSerialize){
+            list.add("${item.latitude},${item.longitude}")
+        }
+        return list
     }
 
     // metodo che richiede i permessi per le notifiche
