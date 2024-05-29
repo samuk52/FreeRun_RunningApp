@@ -1,6 +1,5 @@
 package it.insubria.freerun_runningapp.Activities
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,13 +7,10 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.graphics.drawable.toDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.insubria.freerun_runningapp.R
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.properties.Delegates
 
 class CountDownActivity : AppCompatActivity() {
 
@@ -86,15 +82,18 @@ class CountDownActivity : AppCompatActivity() {
     // metodo che mostra un dialog che chiede all'utente se vuole terminare l'attività
     private fun showEndActivityDialog(){
         // recupero la view
-        val view = LayoutInflater.from(this).inflate(R.layout.end_activity_dialog_layout, null)
+        val view = LayoutInflater.from(this).inflate(R.layout.alert_activity_dialog_layout, null)
+        // imposto il messaggio di allerta
+        val message = view.findViewById<TextView>(R.id.alertActivityDialogText)
+        message.text = resources.getString(R.string.EndActivtyMessage)
         // creo il dialog
         val endActivityDialog = MaterialAlertDialogBuilder(this).setView(view).show()
-        // gestisco quando viene premuto il pulsante che termina l'attività
-        view.findViewById<Button>(R.id.endActivityDialognButton).setOnClickListener {
+        // gestisco quando viene premuto il pulsante di conferma
+        view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
             openHomeActivity()
         }
-        // gestisco quando viene premuto il pulsante che chiude il dialog
-        view.findViewById<Button>(R.id.closeEndActivityDialogButton).setOnClickListener {
+        // gestisco quando viene premuto il pulsante di negazione
+        view.findViewById<Button>(R.id.negativeButton).setOnClickListener {
             endActivityDialog.cancel()
         }
     }
