@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "it.insubria.freerun_runningapp"
-        minSdk = 33
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
