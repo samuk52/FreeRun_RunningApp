@@ -7,10 +7,9 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/endActivityDialogText"
+        android:id="@+id/alertActivityDialogText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/EndActivtyMessage"
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -25,7 +24,7 @@
         android:layout_marginTop="10dp">
 
         <Button
-            android:id="@+id/closeEndActivityDialogButton"
+            android:id="@+id/negativeButton"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +36,7 @@
             android:layout_height="wrap_content" />
 
         <Button
-            android:id="@+id/endActivityDialognButton"
+            android:id="@+id/positiveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Yes"
