@@ -1,23 +1,32 @@
 package it.insubria.freerun_runningapp.Activities
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Outline
-import android.os.Build
+import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.RequiresApi
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.JointType
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.R
 import java.lang.IndexOutOfBoundsException
-import java.lang.reflect.Array
 
 //TODO disegnare il tracciato eseguito dall'utente durante la corsa sulla mappa
 class TrackingRecapActivity : AppCompatActivity() {
@@ -28,6 +37,8 @@ class TrackingRecapActivity : AppCompatActivity() {
     private lateinit var tvAvgPace: TextView
 
     private lateinit var googleMap: GoogleMap
+    private lateinit var databaseManager: DatabaseManager
+    private lateinit var locations: ArrayList<LatLng>
 
     private val callback = OnMapReadyCallback{googleMap ->
         /**
@@ -40,12 +51,20 @@ class TrackingRecapActivity : AppCompatActivity() {
          * user has installed Google Play services and returned to the app.
          */
         this.googleMap = googleMap
+        // faccio in modo che quando premo sui marker non compaiano nella mappa i pulsanti
+        // predefiniti (come quello che apre googleMaps)
+        googleMap.setOnMarkerClickListener {
+            true
+        }
         googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+        drawPolyline()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking_recap)
+
+        databaseManager = DatabaseManager()
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapRecap) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
@@ -67,28 +86,35 @@ class TrackingRecapActivity : AppCompatActivity() {
 
         // gestisco il pulsante che elimina la corsa effettuata
         findViewById<Button>(R.id.deleteTrackingButton).setOnClickListener {
-            //TODO aprire HOME activity
+            // apro il dialog per la conferma dell'eliminazione
+            showDeleteTrackingDialog()
         }
 
         // gestisco il pulsante che salva la corsa
         findViewById<Button>(R.id.saveTrackingButton).setOnClickListener {
-            // TODO salvare la corsa nel database e aprire home activity
+            saveTracking()
         }
 
+        // aggiotno l'intefaccia utente
         updateUI()
 
     }
 
+    // metodo che salva la corsa nel database
+    private fun saveTracking(){
+        // TODO salvare nel database la corsa.
+        databaseManager.addNewActivity(tvTime.text.toString(), tvDistance.text.toString(), tvAvgPace.text.toString(), tvCalories.text.toString(), locations)
+        openHomeActivity()
+    }
+
     // metodo che aggiorna le componenti dell'interfaccia utente
-    // TODO disegnare sulla mappa il percorso dell'utente utilizzando le posizioni nella lista locations
-    //  penso che bisogna avviare un thread.
     private fun updateUI(){
         // recupero i vari dati
-        val time = intent.getStringExtra("time")
+        val time = intent.getStringExtra("time") ?: "00:00:00" // nel caso in cui il valore recupero dall'intent è null, assegno alla variabile time il formato di default -> "00:00:00"
         val distance = intent.getFloatExtra("distance", 0f)
         val avgPace = intent.getFloatExtra("avgPace", 0f)
         val calories = intent.getIntExtra("calories", 0)
-        val locations = intent.getSerializableExtra("locations", ArrayList::class.java)
+        locations = intent.getSerializableExtra("locations", kotlin.collections.ArrayList::class.java) as ArrayList<LatLng>
 
         // aggiorno le componenti dell'interfaccio utente
         tvTime.text = time
@@ -107,4 +133,76 @@ class TrackingRecapActivity : AppCompatActivity() {
             return "0'00\"/KM"
         }
     }
+
+    // metodo che disegna il percorso eseguito dall'utente durante la corsa.
+    private fun drawPolyline(){
+        // disegno il percorso
+        val polyline = googleMap.addPolyline(PolylineOptions()
+            .addAll(locations))
+        polyline.color = getColor(R.color.orange)
+        polyline.jointType = JointType.ROUND
+
+        // aggiungo il marker che indica l'inzio della corsa
+        googleMap.addMarker(MarkerOptions()
+            .position(locations[0])
+            .icon(createCircleIcon(getColor(R.color.green))))
+
+        // aggiungo il marker che indica la fine della corsa.
+        googleMap.addMarker(MarkerOptions()
+            .position(locations[locations.lastIndex])
+            .icon(createCircleIcon(getColor(R.color.red))))
+
+        // calcolo i limiti della polyline, essi mi servono per zoomare sul percorso effettauto
+        // dall'utente, per calcolare i limiti utilizzo un oggetto LatLngBounds.Builder()
+        // al quale aggiungo i punti della polyline e lui tramite il metodo build ci restituisce
+        // i limiti
+        val builder = LatLngBounds.builder()
+        //itero i punti della polyline e gli aggingo al builder
+        for(point in polyline.points){
+            builder.include(point)
+        }
+        // recupero i limiti della polyline
+        val bounds = builder.build()
+
+        // sporto la telecamera di google maps sui limiti
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50))
+    }
+
+    // funzione che crea i circhi di inizio e fine corsa che verranno visualizzati sulla mappa
+    private fun createCircleIcon(color: Int): BitmapDescriptor{
+        val diameter = 30
+        val bitmap = Bitmap.createBitmap(diameter, diameter, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        paint.color = color
+        paint.style = Paint.Style.FILL
+        canvas.drawCircle(diameter / 2f, diameter / 2f, diameter / 2f, paint)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    // metodo che mostra un dialog che chiede all'utente se vuole terminare l'attività
+    private fun showDeleteTrackingDialog(){
+        // recupero la view
+        val view = LayoutInflater.from(this).inflate(R.layout.alert_activity_dialog_layout, null)
+        // imposto il messaggio di allerta
+        val message = view.findViewById<TextView>(R.id.alertActivityDialogText)
+        message.text = resources.getString(R.string.DeleteActivityMessage)
+        // creo il dialog
+        val endActivityDialog = MaterialAlertDialogBuilder(this).setView(view).show()
+        // gestisco quando viene premuto il pulsante di conferma
+        view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
+            openHomeActivity()
+        }
+        // gestisco quando viene premuto il pulsante di negazione
+        view.findViewById<Button>(R.id.negativeButton).setOnClickListener {
+            endActivityDialog.cancel()
+        }
+    }
+
+    // metodo che apre la home activity
+    private fun openHomeActivity(){
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+    }
+
 }
