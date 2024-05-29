@@ -10,6 +10,9 @@ import android.content.ServiceConnection
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.view.LayoutInflater
+import android.widget.RemoteViews
+import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.maps.model.LatLng
 import it.insubria.freerun_runningapp.R
@@ -17,6 +20,7 @@ import it.insubria.freerun_runningapp.TrackingRunComponents.CaloriesCounter
 import it.insubria.freerun_runningapp.TrackingRunComponents.LocationProvider
 import it.insubria.freerun_runningapp.TrackingRunComponents.StepCounter
 import it.insubria.freerun_runningapp.TrackingRunComponents.StopWatch
+import org.w3c.dom.Text
 
 class TrackingService: Service(){
 
@@ -143,10 +147,20 @@ class TrackingService: Service(){
 
     // metodo che mostra la notifica
     private fun showNotification(){
+
+        /*
+        TODO: 1. aggiungere peding intent (intent che viene aperto quando si clicca sulla notifica)
+              2. aggiungere thread che modifica i dati del layout customizzato delle notifiche
+         */
+
+        // recupero il layout delle notifiche
+        val contentView = RemoteViews(packageName, R.layout.notification_layout)
+
         notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Traking service") // todo modificare
-            .setContentText("Free run tracking your activity") // todo modificare
+            //.setContentTitle("Traking service") // todo modificare
+            //.setContentText("Free run tracking your activity") // todo modificare
             .setSmallIcon(R.drawable.run)
+            .setCustomContentView(contentView) // importo il layout customizzato
             .setOnlyAlertOnce(true) // la notifica emette un suono solo la prima volta.
             .build()
         notificationManager.notify(NOTIFY_ID, notification) // mostro la notifica
