@@ -19,7 +19,7 @@
     <string name="WeightText">Inserted weight:</string>
     <string name="WeightInfoMessage">During registration, weight is requested in order to correctly calculate the calories consumed during the run.</string>
     <string name="WeightInfoTitle">Weight</string>
-    <string name="ActivityText">Activity</string>
+    <string name="ActivityText">Activities</string>
     <string name="RunText">Run</string>
     <string name="ProfileText">Profile</string>
     <string name="StartRunText">START</string>
@@ -35,4 +35,5 @@
     <string name="DistanceText">Distance</string>
     <string name="ManText">Man</string>
     <string name="WomanText">Woman</string>
+    <string name="DeleteActivityMessage">Do you want to eliminate the activity ?</string>
 </resources>

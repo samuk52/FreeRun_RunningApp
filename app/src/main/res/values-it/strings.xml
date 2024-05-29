@@ -22,7 +22,7 @@
     <string name="WeightInfoTitle">Peso</string>
     <string name="ActivityText">Attività</string>
     <string name="RunText">Run</string>
-    <string name="ProfileText">Profile</string>
+    <string name="ProfileText">Profilo</string>
     <string name="StartRunText">INIZIA</string>
     <string name="EndActivityBtn">Termina attività</string>
     <string name="EndActivtyMessage">Terminare l\'attività ?</string>
@@ -36,4 +36,5 @@
     <string name="DistanceText">Distanza</string>
     <string name="ManText">Uomo</string>
     <string name="WomanText">Donna</string>
+    <string name="DeleteActivityMessage">Vuoi eliminare l\'attività ?</string>
 </resources>
