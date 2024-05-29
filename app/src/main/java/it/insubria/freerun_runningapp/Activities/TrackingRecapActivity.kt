@@ -114,7 +114,10 @@ class TrackingRecapActivity : AppCompatActivity() {
         val distance = intent.getFloatExtra("distance", 0f)
         val avgPace = intent.getFloatExtra("avgPace", 0f)
         val calories = intent.getIntExtra("calories", 0)
-        locations = intent.getSerializableExtra("locations", kotlin.collections.ArrayList::class.java) as ArrayList<LatLng>
+        // di seguito il metodo getStringArrayListExtra mi restituisce una arrayList di stringhe in particolare
+        // quella inviato dall'activity TrackingActivity, per ottenere una lista di oggetti LatLng, vado a deserializzare
+        // la lista con il metodo di sotto creato
+        locations = deserializeLatLngList(intent.getStringArrayListExtra("locations") as ArrayList<String>)
 
         // aggiorno le componenti dell'interfaccio utente
         tvTime.text = time
@@ -203,6 +206,19 @@ class TrackingRecapActivity : AppCompatActivity() {
     private fun openHomeActivity(){
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
+    }
+
+    // metodo che preso in input una lista di stringhe la deserializza in una lista
+    // di oggetti LatLng, questo metodo è necessario in quando il metodo dell'intent
+    // getSerializableExtra richiede che il device abbiamo come sdk minimo il 33, mentre
+    // io voglio che l'app funzioni anche con sdk minori.
+    private fun deserializeLatLngList(listToDeserialize: ArrayList<String>): ArrayList<LatLng>{
+        val list = arrayListOf<LatLng>()
+        for(item in listToDeserialize){
+            val latLngArray = item.split(",")
+            list.add(LatLng(latLngArray[0].toDouble(), latLngArray[1].toDouble()))
+        }
+        return list
     }
 
 }
