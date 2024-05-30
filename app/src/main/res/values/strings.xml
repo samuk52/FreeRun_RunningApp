@@ -36,4 +36,9 @@
     <string name="ManText">Man</string>
     <string name="WomanText">Woman</string>
     <string name="DeleteActivityMessage">Do you want to eliminate the activity ?</string>
+    <string name="GenderInfoText">Select your gender</string>
+    <string name="GenderText">Gender</string>
+    <string name="NotificationText">Notifications</string>
+    <string name="LocationText">Location</string>
+    <string name="PhysicalActivityText">Physical activity</string>
 </resources>
