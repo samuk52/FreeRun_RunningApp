@@ -233,6 +233,7 @@ class TrackingActivity : AppCompatActivity() {
         }
     }
 
+    // metodo che richiede i permessi per l'attività fisica
     private fun requestActivityRecognitionPermission(){
         if (Build.VERSION.SDK_INT >= 29) {
             ActivityCompat.requestPermissions(

@@ -27,7 +27,7 @@ class StepCounter(private val context: Context): SensorEventListener {
                     avgStepLength = 0.67f
                 }
                 //DEBUG
-                println("GENDER -> $gender")
+                println("GENDER -> $gender, value -> $avgStepLength")
             }
         }
     }
@@ -70,19 +70,16 @@ class StepCounter(private val context: Context): SensorEventListener {
     }
 
     // metodo che restituisce la distanza percorsa in chilometri
-    fun getDistanceInKm(): Float{
-        // TODO modificare, in quanto dipende dal genere, infatti se uomo moltiplichiamo i passi * 0.78
-        //  se donna moltiplichiamo i passi * 0.70, quindi recuperare genere utente
+    fun getDistanceInKm(): Float {
         val distanceInMt = totalSteps * avgStepLength
-        val distanceInKm = distanceInMt / 1000
-        return distanceInKm.toFloat()
+        return distanceInMt / 1000
     }
 
     // funzione che ritorna il passo medio
     fun getAvgPace(minute: Long): Float{
         val distanceInMt = totalSteps * avgStepLength
         val distanceInKm = distanceInMt / 1000
-        return (minute / distanceInKm).toFloat()
+        return (minute / distanceInKm)
     }
 
 }

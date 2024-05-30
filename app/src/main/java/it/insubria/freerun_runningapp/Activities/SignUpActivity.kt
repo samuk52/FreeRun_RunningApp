@@ -65,13 +65,22 @@ class SignUpActivity : AppCompatActivity() {
 
         // gestisco il pulsante di registrazione
         findViewById<Button>(R.id.signUpButton).setOnClickListener {
+            // recupero quale radioButton è stato premuto
             val genderRadioButton = findViewById<RadioButton>(radioGroup.checkedRadioButtonId) // recupero il radio button selezionato
+            var gender = ""
+            // il codice sotto è necessario in quando il testo dei RadioButton dipendono dalla lingua
+            // impostata nel dispositivo, di conseguenza non posso salvare direttamente il testo dei RadioButton
+            // in quanto ci sarebbe disomogeneità nei valori.
+            when(genderRadioButton.id){
+                R.id.manRadioButton -> { gender = "Man" }
+                R.id.womanRadioButton -> { gender = "Woman"}
+            }
             signUp(
                 emailTextField.editText?.text.toString(),
                 passwordTextField.editText?.text.toString(),
                 nameTextField.editText?.text.toString(),
                 integerWeightPicker.value + (decimalWeightPicker.value / 10.0f),
-                genderRadioButton.text.toString()
+                gender
             )
         }
     }
