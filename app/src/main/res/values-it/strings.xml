@@ -42,4 +42,9 @@
     <string name="NotificationText">Notifiche</string>
     <string name="LocationText">Posizione</string>
     <string name="PhysicalActivityText">Attività fisica</string>
+    <string name="PersonalInformationText">Informazioni Personali</string>
+    <string name="SettingsText">Impostazioni</string>
+    <string name="EditText">Modifica</string>
+    <string name="LogOutText">Esci</string>
+    <string name="LogOutMessage">Vuoi uscire da FreeRun ?</string>
 </resources>
