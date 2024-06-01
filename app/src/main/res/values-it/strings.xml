@@ -47,4 +47,5 @@
     <string name="EditText">Modifica</string>
     <string name="LogOutText">Esci</string>
     <string name="LogOutMessage">Vuoi uscire da FreeRun ?</string>
+    <string name="DoneText">Fatto</string>
 </resources>

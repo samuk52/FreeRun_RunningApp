@@ -13,13 +13,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.commit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import it.insubria.freerun_runningapp.Activities.MainActivity
 import it.insubria.freerun_runningapp.Managers.AuthenticationManager
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.R
-import kotlin.math.log
 
 // TODO 1.aggiornare le varie componenti dell'interfaccia utente, selezionare l'icon corretta in base a se l'utente è una domma o un uomo
 //      quindi recuperare queste informazioni dal database
@@ -88,6 +88,7 @@ class ProfileFragment : Fragment() {
         // gestisco quando viene premuto il pulsante per modificare i dati del profilo
         view.findViewById<Button>(R.id.editProfileButton).setOnClickListener {
             // TODO implementare: aprire fragment che permette di modificare i dati
+            openEditProfileFragment()
         }
         // gestisco quando viene premuto il pulsante per modificare i dati del profilo
         view.findViewById<Button>(R.id.logOutButton).setOnClickListener{
@@ -110,7 +111,7 @@ class ProfileFragment : Fragment() {
         databaseManager.getUserInfo().addOnSuccessListener { document ->
             tvName.text = document.get("name") as String
             tvWeight.text = (document.get("weight") as Double).toFloat().toString()
-            tvEmail.text = authManager.getCurrentUser()?.email ?: "Not found"
+            tvEmail.text = authManager.getCurrentUser()?.email
             when(document.get("gender") as String){
                 "Man" -> {
                     tvGender.text = resources.getString(R.string.ManText)
@@ -156,6 +157,19 @@ class ProfileFragment : Fragment() {
             Uri.fromParts("package", requireActivity().packageName, null)
         )
         startActivity(settingsIntent)
+    }
+
+    // metodo che apre il frammento per la modifica del profilo
+    private fun openEditProfileFragment(){
+        parentFragmentManager.commit {
+            setReorderingAllowed(true)
+            val editProfileFragment = EditProfileFragment.newInstance(
+                tvName.text.toString(),
+                tvWeight.text.toString(),
+                tvGender.text.toString()
+            )
+            replace(R.id.fragmentContainerView, editProfileFragment)
+        }
     }
 
     // metodo che mostra un dialog che chiede all'utente se vuole terminare l'attività

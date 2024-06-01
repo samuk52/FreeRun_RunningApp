@@ -46,4 +46,6 @@
     <string name="EditText">Edit</string>
     <string name="LogOutText">Log Out</string>
     <string name="LogOutMessage">Want to log out from FreeRun ?</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="DoneText">Done</string>
 </resources>
