@@ -19,6 +19,7 @@ import com.google.android.material.materialswitch.MaterialSwitch
 import it.insubria.freerun_runningapp.Activities.MainActivity
 import it.insubria.freerun_runningapp.Managers.AuthenticationManager
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
+import it.insubria.freerun_runningapp.Other.User
 import it.insubria.freerun_runningapp.R
 
 // TODO 1.aggiornare le varie componenti dell'interfaccia utente, selezionare l'icon corretta in base a se l'utente è una domma o un uomo
@@ -30,8 +31,8 @@ import it.insubria.freerun_runningapp.R
 //
 class ProfileFragment : Fragment() {
 
-    private lateinit var databaseManager: DatabaseManager
     private lateinit var authManager: AuthenticationManager
+    private lateinit var user: User
 
     private lateinit var tvName: TextView
     private lateinit var tvEmail: TextView
@@ -46,8 +47,8 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        databaseManager = DatabaseManager()
         authManager = AuthenticationManager()
+        user = User.getInstance()
     }
 
     override fun onCreateView(
@@ -108,19 +109,17 @@ class ProfileFragment : Fragment() {
 
     // metodo che si occupa di aggiornare le componenti dell'interfaccia utente
     private fun updateUI(){
-        databaseManager.getUserInfo().addOnSuccessListener { document ->
-            tvName.text = document.get("name") as String
-            tvWeight.text = (document.get("weight") as Double).toFloat().toString()
-            tvEmail.text = authManager.getCurrentUser()?.email
-            when(document.get("gender") as String){
-                "Man" -> {
-                    tvGender.text = resources.getString(R.string.ManText)
-                    avatarImageView.setImageResource(R.drawable.runner_man) // modifico l'avatar
-                }
-                "Woman" -> {
-                    tvGender.text = resources.getString(R.string.WomanText)
-                    avatarImageView.setImageResource(R.drawable.runner_woman) // modifico l'avatar
-                }
+        tvName.text = user.getName()
+        tvWeight.text = user.getWeight().toString()
+        tvEmail.text = user.getEmail()
+        when(user.getGender()){
+            "Man" -> {
+                tvGender.text = resources.getString(R.string.ManText)
+                avatarImageView.setImageResource(R.drawable.runner_man) // modifico l'avatar
+            }
+            "Woman" -> {
+                tvGender.text = resources.getString(R.string.WomanText)
+                avatarImageView.setImageResource(R.drawable.runner_woman) // modifico l'avatar
             }
         }
 

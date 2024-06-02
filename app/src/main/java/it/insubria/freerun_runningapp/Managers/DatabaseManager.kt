@@ -43,4 +43,34 @@ class DatabaseManager {
             .get()
     }
 
+    // metodo che aggiorna il nome dell'utente nel database
+    fun updateName(name: String) {
+        db.collection("users").document(authManager.getCurrentUser()!!.uid)
+            .update(
+                mapOf(
+                    "name" to name
+                )
+            )
+    }
+
+    // metodo che aggiorna il genere dell'utente nel database
+    fun updateGender(gender: String){
+        db.collection("users").document(authManager.getCurrentUser()!!.uid)
+            .update(
+                mapOf(
+                    "gender" to gender
+                )
+            )
+    }
+
+    // metodo che aggiorna il peso dell'utente nel database.
+    fun updateWeight(weight: Float){
+        db.collection("users").document(authManager.getCurrentUser()!!.uid)
+            .update(
+                mapOf(
+                    "weight" to weight
+                )
+            )
+    }
+
 }

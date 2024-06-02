@@ -1,20 +1,17 @@
 package it.insubria.freerun_runningapp.TrackingRunComponents
 
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
+import it.insubria.freerun_runningapp.Other.User
 
 class CaloriesCounter {
 
-    // TODO recuperare peso dell'utente dal database
-    private val databaseManager = DatabaseManager()
+    private val user = User.getInstance()
     private var weight = 0f
 
     init {
-        databaseManager.getUserInfo().addOnSuccessListener { document ->
-            if(document.getDouble("weight") != null) {
-                weight = document.getDouble("weight")!!.toFloat()
-                println("WEIGHT -> $weight")
-            }
-        }
+        weight = user.getWeight()
+        // DEBUG
+        println("WEIGHT -> $weight")
     }
 
     // funzione che calcola le calorie consumato dall'utente

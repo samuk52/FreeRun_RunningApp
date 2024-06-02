@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.RadioGroup
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.google.android.material.textfield.TextInputLayout
+import it.insubria.freerun_runningapp.Other.User
 import it.insubria.freerun_runningapp.R
 import java.lang.IndexOutOfBoundsException
 
@@ -21,9 +23,12 @@ private const val ARG_GENDER = "gender"
 
 class EditProfileFragment : Fragment() {
 
+    private lateinit var user: User
+
     private lateinit var etName: TextInputLayout
     private lateinit var integerWeightPicker: NumberPicker
     private lateinit var decimalWeightPicker: NumberPicker
+    private lateinit var avatarImageView: ImageView
     private lateinit var radioGroup: RadioGroup
 
     // parameters
@@ -39,6 +44,7 @@ class EditProfileFragment : Fragment() {
             weight = it.getString(ARG_WEIGHT)
             gender = it.getString(ARG_GENDER)
         }
+        user = User.getInstance()
     }
 
     override fun onCreateView(
@@ -54,6 +60,7 @@ class EditProfileFragment : Fragment() {
 
         etName = view.findViewById(R.id.editNameText)
         radioGroup = view.findViewById(R.id.editProfileRadioGroup)
+        avatarImageView = view.findViewById(R.id.editAvatarImageView)
         integerWeightPicker = view.findViewById(R.id.editIntegerWeightPicker)
         integerWeightPicker.minValue = 0
         integerWeightPicker.maxValue = 300
@@ -84,14 +91,38 @@ class EditProfileFragment : Fragment() {
         }
         // set gender
         when(gender){
-            "Man" -> { radioGroup.check(R.id.editManRadioButton) }
-            "Woman" -> { radioGroup.check(R.id.editWomanRadioButton) }
+            "Man" -> {
+                radioGroup.check(R.id.editManRadioButton)
+                avatarImageView.setImageResource(R.drawable.runner_man) // modifico l'avatar
+            }
+            "Woman" -> {
+                radioGroup.check(R.id.editWomanRadioButton)
+                avatarImageView.setImageResource(R.drawable.runner_woman) // modifico l'avatar
+            }
         }
     }
 
     // metodo che viene eseguito quando il pulsante edit Button viene cliccato
     private fun editCompleted(){
-        // TODO invocare metodo database che permette di modificare i dati, prima di questo fare controllo sui campi
+        // il nome lo aggiorno solo se il contenuto della editText non è vuoto
+        if(etName.editText!!.text.toString().isNotBlank()) {
+            // recupero il nome
+            val name = etName.editText!!.text.toString()
+            user.setName(name)
+        }
+        // recupero i vari dati
+        var gender = ""
+        when(radioGroup.checkedRadioButtonId){
+            R.id.editManRadioButton -> { gender = "Man" }
+            R.id.editWomanRadioButton -> { gender = "Woman" }
+        }
+        val weight = integerWeightPicker.value + (decimalWeightPicker.value / 10f)
+
+        // aggiorno i dati dell'utente
+        user.setWeight(weight)
+        user.setGender(gender)
+
+        // apro il fragment del profilo
         openProfileFragment()
     }
 

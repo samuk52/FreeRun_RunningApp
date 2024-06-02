@@ -6,11 +6,11 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
+import it.insubria.freerun_runningapp.Other.User
 
 class StepCounter(private val context: Context): SensorEventListener {
 
-    //TODO recuperare il genere dell'utente dal database
-    private val databaseManager = DatabaseManager()
+    private val user = User.getInstance()
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val stepSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
     private var totalSteps = 0
@@ -18,18 +18,12 @@ class StepCounter(private val context: Context): SensorEventListener {
     private var avgStepLength = 0f // lunghezza passo medio
 
     init {
-        databaseManager.getUserInfo().addOnSuccessListener { document ->
-            if(document.get("gender") != null) {
-                val gender = document.get("gender") as String
-                if(gender == "Man"){
-                    avgStepLength = 0.76f
-                }else if (gender == "Woman"){
-                    avgStepLength = 0.67f
-                }
-                //DEBUG
-                println("GENDER -> $gender, value -> $avgStepLength")
-            }
+        when(user.getGender()){
+            "Man" -> { avgStepLength = 0.76f }
+            "Woman" -> { avgStepLength = 0.67f }
         }
+        //DEBUG
+        println("AvgStepLength -> $avgStepLength")
     }
 
     // metodo che viene chiamato, ogni qual volta viene rilevato un evento emesso dal sensore passato
