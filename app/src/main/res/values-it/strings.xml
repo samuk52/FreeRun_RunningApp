@@ -48,4 +48,5 @@
     <string name="LogOutText">Esci</string>
     <string name="LogOutMessage">Vuoi uscire da FreeRun ?</string>
     <string name="DoneText">Fatto</string>
+    <string name="WorkoutDetails">Dettagli Allenamento</string>
 </resources>

@@ -107,13 +107,8 @@ class EditProfileFragment : Fragment() {
 
     // metodo che viene eseguito quando il pulsante edit Button viene cliccato
     private fun editCompleted(){
-        // il nome lo aggiorno solo se il contenuto della editText non è vuoto
-        if(etName.editText!!.text.toString().isNotBlank()) {
-            // recupero il nome
-            val name = etName.editText!!.text.toString()
-            user.setName(name)
-        }
         // recupero i vari dati
+        val name = etName.editText!!.text.toString()
         var gender = ""
         when(radioGroup.checkedRadioButtonId){
             R.id.editManRadioButton -> { gender = "Man" }
@@ -122,6 +117,7 @@ class EditProfileFragment : Fragment() {
         val weight = integerWeightPicker.value + (decimalWeightPicker.value / 10f)
 
         // aggiorno i dati dell'utente
+        user.setName(name)
         user.setWeight(weight)
         user.setGender(gender)
 

@@ -30,7 +30,7 @@ class User (private val email: String, private var name: String, private var wei
     // -- SETTER -- //
     fun setName(name: String){
         // modifico il dato solo se è diverso da quello attuale
-        if(this.name != name) {
+        if(this.name != name && name.isNotBlank()) {
             this.name = name
             databaseManager.updateName(name) // aggiorno il nome nel database
         }
@@ -46,7 +46,7 @@ class User (private val email: String, private var name: String, private var wei
 
     fun setGender(gender: String){
         // modifico il dato solo se è diverso da quello attuale
-        if(this.gender != gender) {
+        if(this.gender != gender && gender.isNotBlank()) {
             this.gender = gender
             databaseManager.updateGender(gender) // aggiorno il genere dell'utente nel database
         }
@@ -72,7 +72,6 @@ class User (private val email: String, private var name: String, private var wei
         fun getInstance(): User{
             return user!!
         }
-
         @JvmStatic
         fun reset(){
             user = null
