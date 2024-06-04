@@ -3,8 +3,8 @@ package it.insubria.freerun_runningapp.Fragments
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +13,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.commit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import it.insubria.freerun_runningapp.Activities.MainActivity
@@ -21,6 +20,7 @@ import it.insubria.freerun_runningapp.Managers.AuthenticationManager
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.Other.User
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 
 // TODO 1.aggiornare le varie componenti dell'interfaccia utente, selezionare l'icon corretta in base a se l'utente è una domma o un uomo
 //      quindi recuperare queste informazioni dal database
@@ -31,7 +31,9 @@ import it.insubria.freerun_runningapp.R
 //
 class ProfileFragment : Fragment() {
 
+    private lateinit var databaseManager: DatabaseManager
     private lateinit var authManager: AuthenticationManager
+    private lateinit var guiUtilities: GuiUtilities
     private lateinit var user: User
 
     private lateinit var tvName: TextView
@@ -47,9 +49,21 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        databaseManager = DatabaseManager()
         authManager = AuthenticationManager()
-        user = User.getInstance()
+        guiUtilities = GuiUtilities(requireActivity())
+        retrieveUser(savedInstanceState)
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // salvo i dati dell'utente, per poi recuperarli nel metodo retriveUser in caso di NullPointerExcpetion
+        outState.putString("email", user.getEmail())
+        outState.putString("name", user.getName())
+        outState.putFloat("weight", user.getWeight())
+        outState.putString("gender", user.getGender())
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,26 +89,32 @@ class ProfileFragment : Fragment() {
 
         // gestisco quando viene premuto il notification switch
         notificationSwitch.setOnClickListener{
-            openAppSettings()
+            guiUtilities.openAppSettings()
         }
         // gestisco quando viene premuto il location switch
         locationSwitch.setOnClickListener{
-            openAppSettings()
+            guiUtilities.openAppSettings()
         }
         // gestisco quando viene premuto il physicalActivitySwitch switch
         physicalActivitySwitch.setOnClickListener{
-            openAppSettings()
+            guiUtilities.openAppSettings()
         }
 
         // gestisco quando viene premuto il pulsante per modificare i dati del profilo
         view.findViewById<Button>(R.id.editProfileButton).setOnClickListener {
             // TODO implementare: aprire fragment che permette di modificare i dati
-            openEditProfileFragment()
+            guiUtilities.openEditProfileFragment(
+                parentFragmentManager,
+                tvName.text.toString(),
+                tvWeight.text.toString(),
+                tvGender.text.toString()
+            )
         }
         // gestisco quando viene premuto il pulsante per modificare i dati del profilo
         view.findViewById<Button>(R.id.logOutButton).setOnClickListener{
-            // TODO apire info dialog che per confermare l'uscita dall'applicazione
-            showConfirmLogOutDialog()
+            guiUtilities.showAlertDialog(resources.getString(R.string.LogOutMessage)){
+                logOut()
+            }
         }
 
         updateUI()
@@ -149,52 +169,24 @@ class ProfileFragment : Fragment() {
         return (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED)
     }
 
-    // metodo che apre l'activity delle impostazioni dell'applicazione
-    private fun openAppSettings(){
-        val settingsIntent = Intent(
-            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            Uri.fromParts("package", requireActivity().packageName, null)
-        )
-        startActivity(settingsIntent)
-    }
-
-    // metodo che apre il frammento per la modifica del profilo
-    private fun openEditProfileFragment(){
-        parentFragmentManager.commit {
-            setReorderingAllowed(true)
-            val editProfileFragment = EditProfileFragment.newInstance(
-                tvName.text.toString(),
-                tvWeight.text.toString(),
-                tvGender.text.toString()
-            )
-            replace(R.id.fragmentContainerView, editProfileFragment)
-        }
-    }
-
-    // metodo che mostra un dialog che chiede all'utente se vuole terminare l'attività
-    private fun showConfirmLogOutDialog(){
-        // recupero la view
-        val view = LayoutInflater.from(requireActivity()).inflate(R.layout.alert_activity_dialog_layout, null)
-        // imposto il messaggio di allerta
-        val message = view.findViewById<TextView>(R.id.alertActivityDialogText)
-        message.text = resources.getString(R.string.LogOutMessage)
-        // creo il dialog
-        val dialog = MaterialAlertDialogBuilder(requireActivity()).setView(view).show()
-        // gestisco quando viene premuto il pulsante di conferma
-        view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
-            // se l'utente conferma il logOut, eseguo l'apposito metodo
-            logOut()
-        }
-        // gestisco quando viene premuto il pulsante di negazione
-        view.findViewById<Button>(R.id.negativeButton).setOnClickListener {
-            dialog.cancel()
+    // metodo per recuperare le informazioni dell'utente corrente
+    private fun retrieveUser(savedInstanceState: Bundle?) {
+        try {
+            user = User.getInstance() // recupero l'utente, in caso di eccezione vado a ri-recuperarli dallo stato
+        }catch (e: NullPointerException){
+            // DEBUG
+            println("getting user data from savedInstanceState")
+            val email = savedInstanceState?.getString("email") ?: "NaN"
+            val name = savedInstanceState?.getString("name") ?: "NaN"
+            val weight = savedInstanceState?.getFloat("weight") ?: 0.0f
+            val gender = savedInstanceState?.getString("gender") ?: "NaN"
+            user = User.newInstance(email, name, weight, gender)
         }
     }
 
     // metodo che effettua il log out dall'applicazione
     private fun logOut(){
         authManager.signOut()
-        //DEBUG
-        startActivity(Intent(requireActivity(), MainActivity::class.java))
+        guiUtilities.openMainActivity()
     }
 }

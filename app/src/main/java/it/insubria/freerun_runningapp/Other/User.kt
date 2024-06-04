@@ -2,7 +2,9 @@ package it.insubria.freerun_runningapp.Other
 
 import androidx.core.graphics.rotationMatrix
 import androidx.core.view.ContentInfoCompat.Flags
+import it.insubria.freerun_runningapp.Managers.AuthenticationManager
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
+import java.io.Serializable
 
 class User (private val email: String, private var name: String, private var weight: Float, private var gender: String){
 
@@ -55,8 +57,10 @@ class User (private val email: String, private var name: String, private var wei
     }
 
     companion object{
+
         @JvmStatic
         private var user: User? = null
+
         @JvmStatic
         fun newInstance(email: String, name: String, weight: Float, gender: String): User{
             if (user == null) {
@@ -68,5 +72,11 @@ class User (private val email: String, private var name: String, private var wei
         fun getInstance(): User{
             return user!!
         }
+
+        @JvmStatic
+        fun reset(){
+            user = null
+        }
+
     }
 }

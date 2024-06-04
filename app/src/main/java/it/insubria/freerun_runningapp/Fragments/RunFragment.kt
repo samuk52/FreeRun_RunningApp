@@ -22,12 +22,14 @@ import com.google.android.gms.maps.model.LatLng
 import it.insubria.freerun_runningapp.Activities.CountDownActivity
 import it.insubria.freerun_runningapp.Activities.MainActivity
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import java.lang.NullPointerException
 
 class RunFragment : Fragment(){
 
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var guiUtilities: GuiUtilities
 
     // riceve i rusultati dell'activity che richiede i permessi della localizzazione invocata nel metodo getCurrentPosition
     private val locationPermissionRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()){isGranted ->
@@ -65,6 +67,8 @@ class RunFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        guiUtilities = GuiUtilities(requireActivity())
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
 
@@ -72,8 +76,7 @@ class RunFragment : Fragment(){
 
         // gestisco il pulsante che avvia la corsa.
         view.findViewById<Button>(R.id.startRunButton).setOnClickListener {
-            //TODO open countdownActivity
-            openCountDownActivity()
+            guiUtilities.openCountDownActivity()
         }
 
     }
@@ -110,10 +113,5 @@ class RunFragment : Fragment(){
                 locationPermissionRequest.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
-    }
-
-    private fun openCountDownActivity(){
-        val intent = Intent(requireActivity(), CountDownActivity::class.java)
-        startActivity(intent)
     }
 }

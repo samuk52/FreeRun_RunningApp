@@ -13,18 +13,21 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputLayout
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 
 // TODO forse aggiungere textView per il recupero della password, il quale avverrà tramite l'API di firebase authentication
 // TODO modificare metodo showErrorLoginMessage, il quale deve mostare o un banner o un Toast con il layout definito sta mattina
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var authenticationManager: AuthenticationManager
+    private lateinit var guiUtilities: GuiUtilities
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         authenticationManager = AuthenticationManager()
+        guiUtilities = GuiUtilities(this)
 
         // recupero le textField presenti nel form di login
         val emailTextField = findViewById<TextInputLayout>(R.id.emailLogin)
@@ -32,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
 
         // gestisco il pulsante di chiusura del form di login
         findViewById<Button>(R.id.closeLogInButton).setOnClickListener{
-            openMainActivity()
+            guiUtilities.openMainActivity()
         }
 
         // gestisco il pulsante di log in
@@ -59,47 +62,27 @@ class LoginActivity : AppCompatActivity() {
                     // DEBUG todo rimuovere
                     Toast.makeText(this, "Login successfully", Toast.LENGTH_LONG).show()
                 }else{
-                    showErrorLoginMessage()
+                    guiUtilities.showErrorBanner(
+                        findViewById(android.R.id.content),
+                        resources.getString(R.string.ErrorLogInTitle),
+                        resources.getString(R.string.ErrorLogInMessage)
+                    )
                 }
             }
         }else{
-            showErrorLoginMessage()
+            guiUtilities.showErrorBanner(
+                findViewById(android.R.id.content),
+                resources.getString(R.string.ErrorLogInTitle),
+                resources.getString(R.string.ErrorLogInMessage)
+            )
         }
     }
 
-    // metodo che apre la mainActivity
-    private fun openMainActivity(){
-        val mainActivityIntent = Intent(this, MainActivity::class.java)
-        startActivity(mainActivityIntent)
-    }
-
-    // funzione che viene invocata dall'it.insubria.freerun.managers.AuthenticationManager se il log in non è andato a buon fine
-    // essa viene passata come argomento alla funzione login dell'authentication manager.
+    // TODO vedere se rimuovere
     private fun successLogin(){
         // TODO implemetare, in particolare aprire le activity che chiedono il peso e l'altezza all'utente per il calcolo delle calorie
         // DEBUG
         Log.d("Login Activity", "Login successfully")
-    }
-
-    // funzione che viene invocata dall'it.insubria.freerun.managers.AuthenticationManager se il login non è andato a buon fine
-    // essa viene passata come argomento alla funzione login dell'authentication manager.
-    private fun showErrorLoginMessage(){
-        // recupero la roorView
-        val rootView = findViewById<ViewGroup>(android.R.id.content)
-        // set della view contenete il layout di errore
-        val errorBanner = layoutInflater.inflate(R.layout.error_authentication_layout, rootView, false)
-        // recupero le due textView, titolo e messaggio, della view
-        val errorTitle = errorBanner.findViewById<TextView>(R.id.errorTitleText)
-        val errorMessage = errorBanner.findViewById<TextView>(R.id.errorMessageText)
-        // modifico il titolo e il messaggio della error view
-        errorTitle.text = resources.getString(R.string.ErrorLogInTitle)
-        errorMessage.text = resources.getString(R.string.ErrorLogInMessage)
-        // aggiungo la view di errore
-        rootView.addView(errorBanner)
-        // avvio un thread (hanlder) che si occuperà di eliminare la view di error dopo 3 secondi dalla sua visualizzazione
-        Handler(Looper.getMainLooper()).postDelayed({
-            rootView.removeView(errorBanner)
-        }, 3000)
     }
 
 }

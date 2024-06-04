@@ -5,35 +5,28 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var guiUtilities: GuiUtilities
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        guiUtilities = GuiUtilities(this)
+
         // gestisco il pulsante per la registrazione.
         findViewById<Button>(R.id.welcomeSignUpButton).setOnClickListener {
-            openSignUpActivity()
+            guiUtilities.openSignUpActivity()
         }
 
         // gestisco il pulsante per il login
         findViewById<Button>(R.id.welcomeLogInButton).setOnClickListener {
-            // DEBUG todo tenere per debug su homeactivity
+            // DEBUG todo tenere per debug su homeactivity poi aprire correttamente loginActivity
+            guiUtilities.openHomeActivity()
             // startActivity(Intent(this, HomeActivity::class.java))
-            openLogInActivity()
         }
-    }
-
-    // metodo che apre l'activity per la registrazione dell'utente
-    private fun openSignUpActivity(){
-        val signUpIntent = Intent(this, SignUpActivity::class.java)
-        startActivity(signUpIntent)
-    }
-
-    // metodo che apre l'activity per il log in dell'utente
-    private fun openLogInActivity(){
-        val logInIntent = Intent(this, LoginActivity::class.java)
-        startActivity(logInIntent)
     }
 }

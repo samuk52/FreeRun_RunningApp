@@ -7,8 +7,11 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -16,12 +19,15 @@ class CountDownActivity : AppCompatActivity() {
 
     private lateinit var executor: ExecutorService
     private lateinit var countDownText: TextView
+    private lateinit var guiUtilities: GuiUtilities
 
     private var countDown = 3
     private var countDownStopped = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_count_down)
+
+        guiUtilities = GuiUtilities(this)
 
         countDownText = findViewById(R.id.countDownText)
 
@@ -46,8 +52,22 @@ class CountDownActivity : AppCompatActivity() {
         }
 
         endActivityBtn.setOnClickListener {
-            showEndActivityDialog()
+            guiUtilities.showAlertDialog(resources.getString(R.string.EndActivtyMessage)){
+                guiUtilities.openHomeActivity()
+            }
         }
+
+        handleOnBackPressed()
+
+    }
+
+    // gestisco quando viene premuto il pulsante "indietro" di android
+    private fun handleOnBackPressed(){
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                // quando viene premuto non succede niente
+            }
+        })
     }
 
     // metodo che avvia il countDown
@@ -68,7 +88,7 @@ class CountDownActivity : AppCompatActivity() {
             }
             if(countDown == 0) {
                 // TODO avviare activity che monitora la corsa
-                openTrackingActivity()
+                guiUtilities.openTrackingActivity()
             }
         }
     }
@@ -77,37 +97,6 @@ class CountDownActivity : AppCompatActivity() {
     // di eseguire il countdown
     private fun stopCountDown(){
         executor.shutdownNow()
-    }
-
-    // metodo che mostra un dialog che chiede all'utente se vuole terminare l'attività
-    private fun showEndActivityDialog(){
-        // recupero la view
-        val view = LayoutInflater.from(this).inflate(R.layout.alert_activity_dialog_layout, null)
-        // imposto il messaggio di allerta
-        val message = view.findViewById<TextView>(R.id.alertActivityDialogText)
-        message.text = resources.getString(R.string.EndActivtyMessage)
-        // creo il dialog
-        val endActivityDialog = MaterialAlertDialogBuilder(this).setView(view).show()
-        // gestisco quando viene premuto il pulsante di conferma
-        view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
-            openHomeActivity()
-        }
-        // gestisco quando viene premuto il pulsante di negazione
-        view.findViewById<Button>(R.id.negativeButton).setOnClickListener {
-            endActivityDialog.cancel()
-        }
-    }
-
-    // metodo che apre la home activity
-    private fun openHomeActivity(){
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
-    }
-
-    // metodo che apre la tracking activity
-    private fun openTrackingActivity(){
-        val intent = Intent(this, TrackingActivity::class.java)
-        startActivity(intent)
     }
 
 }

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import java.lang.IndexOutOfBoundsException
 
 //TODO disegnare il tracciato eseguito dall'utente durante la corsa sulla mappa
@@ -39,6 +41,8 @@ class TrackingRecapActivity : AppCompatActivity() {
     private lateinit var googleMap: GoogleMap
     private lateinit var databaseManager: DatabaseManager
     private lateinit var locations: ArrayList<LatLng>
+
+    private lateinit var guiUtilities: GuiUtilities
 
     private val callback = OnMapReadyCallback{googleMap ->
         /**
@@ -65,6 +69,7 @@ class TrackingRecapActivity : AppCompatActivity() {
         setContentView(R.layout.activity_tracking_recap)
 
         databaseManager = DatabaseManager()
+        guiUtilities = GuiUtilities(this)
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapRecap) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
@@ -86,8 +91,9 @@ class TrackingRecapActivity : AppCompatActivity() {
 
         // gestisco il pulsante che elimina la corsa effettuata
         findViewById<Button>(R.id.deleteTrackingButton).setOnClickListener {
-            // apro il dialog per la conferma dell'eliminazione
-            showDeleteTrackingDialog()
+            guiUtilities.showAlertDialog(resources.getString(R.string.DeleteActivityMessage)){
+                guiUtilities.openHomeActivity()
+            }
         }
 
         // gestisco il pulsante che salva la corsa
@@ -95,16 +101,27 @@ class TrackingRecapActivity : AppCompatActivity() {
             saveTracking()
         }
 
+        handleOnBackPressed()
+
         // aggiotno l'intefaccia utente
         updateUI()
 
+    }
+
+    // gestisco quando viene premuto il pulsante "indietro" di android
+    private fun handleOnBackPressed(){
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                // quando viene premuto non succede niente
+            }
+        })
     }
 
     // metodo che salva la corsa nel database
     private fun saveTracking(){
         // TODO salvare nel database la corsa.
         databaseManager.addNewActivity(tvTime.text.toString(), tvDistance.text.toString(), tvAvgPace.text.toString(), tvCalories.text.toString(), locations)
-        openHomeActivity()
+        guiUtilities.openHomeActivity()
     }
 
     // metodo che aggiorna le componenti dell'interfaccia utente
@@ -191,31 +208,6 @@ class TrackingRecapActivity : AppCompatActivity() {
         paint.style = Paint.Style.FILL
         canvas.drawCircle(diameter / 2f, diameter / 2f, diameter / 2f, paint)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
-
-    // metodo che mostra un dialog che chiede all'utente se vuole terminare l'attività
-    private fun showDeleteTrackingDialog(){
-        // recupero la view
-        val view = LayoutInflater.from(this).inflate(R.layout.alert_activity_dialog_layout, null)
-        // imposto il messaggio di allerta
-        val message = view.findViewById<TextView>(R.id.alertActivityDialogText)
-        message.text = resources.getString(R.string.DeleteActivityMessage)
-        // creo il dialog
-        val endActivityDialog = MaterialAlertDialogBuilder(this).setView(view).show()
-        // gestisco quando viene premuto il pulsante di conferma
-        view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
-            openHomeActivity()
-        }
-        // gestisco quando viene premuto il pulsante di negazione
-        view.findViewById<Button>(R.id.negativeButton).setOnClickListener {
-            endActivityDialog.cancel()
-        }
-    }
-
-    // metodo che apre la home activity
-    private fun openHomeActivity(){
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
     }
 
     // metodo che preso in input una lista di stringhe la deserializza in una lista

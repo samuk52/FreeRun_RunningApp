@@ -14,6 +14,7 @@ import androidx.fragment.app.replace
 import com.google.android.material.textfield.TextInputLayout
 import it.insubria.freerun_runningapp.Other.User
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import java.lang.IndexOutOfBoundsException
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,6 +24,7 @@ private const val ARG_GENDER = "gender"
 
 class EditProfileFragment : Fragment() {
 
+    private lateinit var guiUtilities: GuiUtilities
     private lateinit var user: User
 
     private lateinit var etName: TextInputLayout
@@ -44,6 +46,7 @@ class EditProfileFragment : Fragment() {
             weight = it.getString(ARG_WEIGHT)
             gender = it.getString(ARG_GENDER)
         }
+        guiUtilities = GuiUtilities(requireActivity())
         user = User.getInstance()
     }
 
@@ -123,14 +126,7 @@ class EditProfileFragment : Fragment() {
         user.setGender(gender)
 
         // apro il fragment del profilo
-        openProfileFragment()
-    }
-
-    private fun openProfileFragment(){
-        parentFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace<ProfileFragment>(R.id.fragmentContainerView)
-        }
+        guiUtilities.openProfileFragment(parentFragmentManager)
     }
 
     companion object {

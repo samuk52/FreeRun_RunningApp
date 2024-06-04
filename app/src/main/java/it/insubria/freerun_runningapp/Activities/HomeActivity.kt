@@ -13,11 +13,13 @@ import it.insubria.freerun_runningapp.Managers.AuthenticationManager
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.Other.User
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var databaseManager: DatabaseManager
     private lateinit var authenticationManager: AuthenticationManager
+    private lateinit var guiUtilities: GuiUtilities
     private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +28,7 @@ class HomeActivity : AppCompatActivity() {
 
         databaseManager = DatabaseManager()
         authenticationManager = AuthenticationManager()
+        guiUtilities = GuiUtilities(this)
 
         // recupero i dati dal database e inizializzo un nuovo Utente
         initUser()
@@ -37,15 +40,15 @@ class HomeActivity : AppCompatActivity() {
         bottomNavigationBar.setOnItemSelectedListener { item ->
             when(item.itemId){
                 R.id.item_activities -> {
-                    openActivitiesFragment()
+                    guiUtilities.openActivitiesFragment(supportFragmentManager)
                     true
                 }
                 R.id.item_run -> {
-                    openRunFragment()
+                    guiUtilities.openRunFragment(supportFragmentManager)
                     true
                 }
                 R.id.item_profile -> {
-                    openProfileFragment()
+                    guiUtilities.openProfileFragment(supportFragmentManager)
                     true
                 }
                 else -> false
@@ -55,37 +58,13 @@ class HomeActivity : AppCompatActivity() {
 
     private fun initUser(){
         databaseManager.getUserInfo().addOnSuccessListener { document ->
-            val email = authenticationManager.getCurrentUser()!!.email
-            val name = document.getString("name")
-            val gender = document.getString("gender")
-            val weight = document.getDouble("weight")!!.toFloat()
-            user = User.newInstance(email!!, name!!, weight, gender!!)
+            val email = authenticationManager.getCurrentUser()?.email ?: "NaN"
+            val name = document.getString("name") ?: "NaN"
+            val gender = document.getString("gender") ?: "NaN"
+            val weight = document.getDouble("weight")?.toFloat() ?: 0.0f
+            user = User.newInstance(email, name, weight, gender)
             //DEBUG todo Remove
             println("User init -> $user")
-        }
-    }
-
-    // metodo che apre l'activities fragment
-    private fun openActivitiesFragment(){
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace<ActivitiesFragment>(R.id.fragmentContainerView)
-        }
-    }
-
-    // metodo che apre il run fragments
-    private fun openRunFragment(){
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace<RunFragment>(R.id.fragmentContainerView)
-        }
-    }
-
-    // metodo che apre il profile fragments
-    private fun openProfileFragment(){
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace<ProfileFragment>(R.id.fragmentContainerView)
         }
     }
 }

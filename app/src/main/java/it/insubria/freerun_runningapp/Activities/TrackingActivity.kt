@@ -16,11 +16,13 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.insubria.freerun_runningapp.R
 import it.insubria.freerun_runningapp.Services.TrackingService
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -40,6 +42,7 @@ class TrackingActivity : AppCompatActivity() {
     private var bound = false // variabile che inidica se c'è qulche componente legato al servizio
 
     private lateinit var runDataUpdater: ExecutorService
+    private lateinit var guiUtilities: GuiUtilities
 
     private lateinit var time: String
     private var km = 0f
@@ -61,6 +64,8 @@ class TrackingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
+
+        guiUtilities = GuiUtilities(this)
 
         // recupero le varie TextView (tempo, chilometri e calorie)
         tvTime = findViewById(R.id.textViewTime)
@@ -88,8 +93,12 @@ class TrackingActivity : AppCompatActivity() {
 
         // gestisco il pulsante che termina l'attività
         restartButtonView.findViewById<Button>(R.id.stopTrackingButton).setOnClickListener {
-            showEndActivityDialog()
+            guiUtilities.showAlertDialog(resources.getString(R.string.EndActivtyMessage)){
+                stopTrackingService()
+            }
         }
+
+        handleOnBackPressed()
 
         // richiesta dei permessi
         requestNotificationPermission()
@@ -109,6 +118,15 @@ class TrackingActivity : AppCompatActivity() {
         }
     }
 
+    // gestisco quando viene premuto il pulsante "indietro" di android
+    private fun handleOnBackPressed(){
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                // quando viene premuto non succede niente
+            }
+        })
+    }
+
     private fun startTrackingService(){
         trackingStarted = true
         val trackingServiceIntent = Intent(this, TrackingService::class.java)
@@ -117,7 +135,7 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     private fun stopTrackingService(){
-        openTrackingRecapActivity(time, km, calories, trackingService!!.getAvgPace(), trackingService!!.getLocations())
+        guiUtilities.openTrackingRecapActivity(time, km, calories, trackingService!!.getAvgPace(), serializeLatLngList(trackingService!!.getLocations()))
         if(bound) {
             unbindService(serviceConnection)
         }
@@ -180,37 +198,6 @@ class TrackingActivity : AppCompatActivity() {
         tvTime.text = time
         tvKilometers.text = String.format("%.2f", km)
         tvCalories.text = "$calories"
-    }
-
-    // metodo che mostra un dialog che chiede all'utente se vuole terminare l'attività
-    private fun showEndActivityDialog(){
-        // recupero la view
-        val view = LayoutInflater.from(this).inflate(R.layout.alert_activity_dialog_layout, null)
-        // imposto il messaggio di allerta
-        val message = view.findViewById<TextView>(R.id.alertActivityDialogText)
-        message.text = resources.getString(R.string.EndActivtyMessage)
-        // creo il dialog
-        val endActivityDialog = MaterialAlertDialogBuilder(this).setView(view).show()
-        // gestisco quando viene premuto il pulsante che termina l'attività
-        view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
-            stopTrackingService()
-        }
-        // gestisco quando viene premuto il pulsante che chiude il dialog
-        view.findViewById<Button>(R.id.negativeButton).setOnClickListener {
-            endActivityDialog.cancel()
-        }
-    }
-
-    // metodo che apre l'activity del recap della corsa.
-    private fun openTrackingRecapActivity(time: String, distance: Float, calories: Int, avgPace: Float, locations: ArrayList<LatLng>){
-        val recapTrackingIntent = Intent(this, TrackingRecapActivity::class.java)
-        // passo all'activity i vari dati
-        recapTrackingIntent.putExtra("time", time)
-        recapTrackingIntent.putExtra("distance", distance)
-        recapTrackingIntent.putExtra("avgPace", avgPace)
-        recapTrackingIntent.putExtra("calories", calories)
-        recapTrackingIntent.putStringArrayListExtra("locations", serializeLatLngList(locations))
-        startActivity(recapTrackingIntent)
     }
 
     // metodo che presa in input una lista di oggetti LatLng, la serializza in una lista di stringhe
