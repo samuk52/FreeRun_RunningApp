@@ -1,13 +1,11 @@
 package it.insubria.freerun_runningapp.Activities
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Outline
 import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.Button
@@ -24,11 +22,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.R
 import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import java.lang.IndexOutOfBoundsException
+import java.text.SimpleDateFormat
+import java.util.Date
 
 //TODO disegnare il tracciato eseguito dall'utente durante la corsa sulla mappa
 class TrackingRecapActivity : AppCompatActivity() {
@@ -119,8 +118,8 @@ class TrackingRecapActivity : AppCompatActivity() {
 
     // metodo che salva la corsa nel database
     private fun saveTracking(){
-        // TODO salvare nel database la corsa.
-        databaseManager.addNewActivity(tvTime.text.toString(), tvDistance.text.toString(), tvAvgPace.text.toString(), tvCalories.text.toString(), locations)
+        val currentDate = SimpleDateFormat("dd/MM/yy").format(Date()) // recupero la data odierna
+        databaseManager.addNewRun(currentDate, tvTime.text.toString(), tvDistance.text.toString(), tvAvgPace.text.toString(), tvCalories.text.toString(), locations)
         guiUtilities.openHomeActivity()
     }
 
@@ -138,7 +137,7 @@ class TrackingRecapActivity : AppCompatActivity() {
 
         // aggiorno le componenti dell'interfaccio utente
         tvTime.text = time
-        tvDistance.text = "${String.format("%.2f", distance)} KM"
+        tvDistance.text = String.format("%.2f", distance)
         tvAvgPace.text = getFormattedAvgPace(avgPace)
         tvCalories.text = "$calories"
 
@@ -148,9 +147,9 @@ class TrackingRecapActivity : AppCompatActivity() {
     private fun getFormattedAvgPace(avgPace: Float): String{
         try {
             val avgPaceToFormat = String.format("%.2f", avgPace).split(".")
-            return "${avgPaceToFormat[0]}'${avgPaceToFormat[1]}\"/KM"
+            return "${avgPaceToFormat[0]}'${avgPaceToFormat[1]}\""
         }catch (e: IndexOutOfBoundsException){
-            return "0'00\"/KM"
+            return "_'__\""
         }
     }
 

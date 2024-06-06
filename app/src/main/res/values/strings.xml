@@ -49,4 +49,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="DoneText">Done</string>
     <string name="WorkoutDetails">Workout Details</string>
+    <string name="DeleteRunMessage">Do you want to eliminate the run ?</string>
+    <string name="DeleteText">Delete</string>
 </resources>

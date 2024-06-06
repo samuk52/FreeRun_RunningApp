@@ -115,6 +115,7 @@ class TrackingActivity : AppCompatActivity() {
         // allora faccio l'unbind del servizio, altrimenti no
         if(bound) {
             unbindService(serviceConnection)
+            bound = false
         }
     }
 
@@ -138,6 +139,7 @@ class TrackingActivity : AppCompatActivity() {
         guiUtilities.openTrackingRecapActivity(time, km, calories, trackingService!!.getAvgPace(), serializeLatLngList(trackingService!!.getLocations()))
         if(bound) {
             unbindService(serviceConnection)
+            bound = false
         }
     }
 

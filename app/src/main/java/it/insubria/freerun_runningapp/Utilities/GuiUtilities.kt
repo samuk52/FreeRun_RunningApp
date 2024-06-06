@@ -16,6 +16,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.insubria.freerun_runningapp.Activities.CountDownActivity
 import it.insubria.freerun_runningapp.Activities.HomeActivity
 import it.insubria.freerun_runningapp.Activities.LoginActivity
+import it.insubria.freerun_runningapp.Activities.MainActivity
 import it.insubria.freerun_runningapp.Activities.SignUpActivity
 import it.insubria.freerun_runningapp.Activities.TrackingActivity
 import it.insubria.freerun_runningapp.Activities.TrackingRecapActivity
@@ -30,7 +31,9 @@ class GuiUtilities(private val context: Context) {
 
     // -- METODI PER APRIRE LE ACTIVITY -- //
     fun openMainActivity(){
-        val intent = Intent(context, HomeActivity::class.java)
+        val intent = Intent(context, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
     }
 
@@ -125,9 +128,33 @@ class GuiUtilities(private val context: Context) {
         // gestisco quando viene premuto il pulsante di conferma
         view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
             positiveButtonMethod()
+            dialog.cancel()
         }
         // gestisco quando viene premuto il pulsante di negazione
         view.findViewById<Button>(R.id.negativeButton).setOnClickListener {
+            dialog.cancel()
+        }
+    }
+
+    // metodo uguale al precedente ma in più si passa il metodo che deve essere eseguito nel caso
+    // venga premuto il pulsante "negativo" presente nel dialog.
+    fun showAlertDialog(message: String, negativeButtonMethod: () -> Unit, positiveButtonMethod: () -> Unit){
+        println("---- showAlertDialog ----")
+        // recupero la view
+        val view = LayoutInflater.from(context).inflate(R.layout.alert_activity_dialog_layout, null)
+        // imposto il messaggio di allerta
+        val tvMessage = view.findViewById<TextView>(R.id.alertActivityDialogText)
+        tvMessage.text = message
+        // creo il dialog
+        val dialog = MaterialAlertDialogBuilder(context).setView(view).show()
+        // gestisco quando viene premuto il pulsante di conferma
+        view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
+            positiveButtonMethod()
+            dialog.cancel()
+        }
+        // gestisco quando viene premuto il pulsante di negazione
+        view.findViewById<Button>(R.id.negativeButton).setOnClickListener {
+            negativeButtonMethod()
             dialog.cancel()
         }
     }
