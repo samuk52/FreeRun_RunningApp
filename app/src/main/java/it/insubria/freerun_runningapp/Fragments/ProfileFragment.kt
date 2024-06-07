@@ -172,7 +172,7 @@ class ProfileFragment : Fragment() {
     // metodo per recuperare le informazioni dell'utente corrente
     private fun retrieveUser(savedInstanceState: Bundle?) {
         try {
-            user = User.getInstance() // recupero l'utente, in caso di eccezione vado a ri-recuperarli dallo stato
+            user = User.getInstance()!! // recupero l'utente, in caso di eccezione vado a ri-recuperarli dallo stato
         }catch (e: NullPointerException){
             // DEBUG
             println("getting user data from savedInstanceState")
@@ -186,6 +186,9 @@ class ProfileFragment : Fragment() {
 
     // metodo che effettua il log out dall'applicazione
     private fun logOut(){
+        // reset dell'utente, in questo modo se si effettua subito il logIn con un altro account,
+        // si possono recuperare correttamente i dati dell'utente
+        User.reset()
         authManager.signOut()
         guiUtilities.openMainActivity()
     }

@@ -16,14 +16,17 @@ import it.insubria.freerun_runningapp.Interfaces.RecyclerViewClickInterface
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.Other.Run
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.DataUtilities
 import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import java.util.Objects
 
 class ActivitiesFragment : Fragment(), RecyclerViewClickInterface {
 
     private lateinit var databaseManager: DatabaseManager
     private lateinit var adapter: CustomAdapter
     private lateinit var guiUtilities: GuiUtilities
+    private lateinit var dataUtilities: DataUtilities
 
     // callback che rileva eventi di swap verso sinistra sullo specifico viewHolder della recylerView
     private val swipeCallback: ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT){
@@ -38,14 +41,18 @@ class ActivitiesFragment : Fragment(), RecyclerViewClickInterface {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.layoutPosition// recupero la posizione dell'adapter position nella recylerView
+            val run = adapter.getRun(position)
             guiUtilities.showAlertDialog(
                 resources.getString(R.string.DeleteRunMessage),
                 {
                     adapter.restoreRun(position)
                 },
                 {
-                    adapter.removeRun(position)
-                    // TODO chiamare metodo del databaseManager che rimuove la corsa dal database.
+                    // rimuovo la corsa dal database
+                    databaseManager.removeUserRun(run.getId()).addOnSuccessListener {
+                        // se la corsa è stata eliminata correttamente dal database, la elimino anche dalla recylerView
+                        adapter.removeRun(position)
+                    }
                 }
             )
         }
@@ -76,6 +83,7 @@ class ActivitiesFragment : Fragment(), RecyclerViewClickInterface {
         super.onCreate(savedInstanceState)
         databaseManager = DatabaseManager()
         guiUtilities = GuiUtilities(requireActivity())
+        dataUtilities = DataUtilities()
         adapter = CustomAdapter(this)
     }
 
@@ -104,6 +112,15 @@ class ActivitiesFragment : Fragment(), RecyclerViewClickInterface {
     // metodo che gestisce quando viene effettuato il click su un elemento della recylerView
     override fun onClick(position: Int) {
         // TODO aprire fragment per mostrare i dati della corsa
+        val run = adapter.getRun(position)
+        guiUtilities.openShowRunDetailsFragment(
+            parentFragmentManager,
+            run.getTime(),
+            run.getDistance(),
+            run.getCalories(),
+            run.getAvgPace(),
+            dataUtilities.serializeLatLngList(run.getLocations())
+        )
     }
 
     // metodo che recupera dal database le corse effettuate dall'utente
@@ -116,7 +133,15 @@ class ActivitiesFragment : Fragment(), RecyclerViewClickInterface {
                 val distance = document.getString("distance") ?: "--"
                 val avgPace = document.getString("avgPace") ?: "_'__\""
                 val calories = document.getString("calories") ?: "--"
-                val locations = document.get("locations") as ArrayList<LatLng>
+                val locations = arrayListOf<LatLng>()
+                // all'interno di firebase la lista di LatLng viene deserializzata in una lista
+                // di hashMap string-double. per questo motivo vado a ri-serializzare la lista
+                for(location in document.get("locations") as List<HashMap<String, Double>>){
+                    val lat = location["latitude"] ?: 0.0
+                    val lng = location["longitude"] ?: 0.0
+                    locations.add(LatLng(lat, lng))
+                }
+
                 val run = Run(id, date, distance, time, calories, avgPace, locations)
                 adapter.addRun(run)
                 //DEBUG

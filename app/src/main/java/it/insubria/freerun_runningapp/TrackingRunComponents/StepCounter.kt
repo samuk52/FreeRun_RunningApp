@@ -18,7 +18,7 @@ class StepCounter(private val context: Context): SensorEventListener {
     private var avgStepLength = 0f // lunghezza passo medio
 
     init {
-        when(user.getGender()){
+        when(user!!.getGender()){
             "Man" -> { avgStepLength = 0.76f }
             "Woman" -> { avgStepLength = 0.67f }
         }

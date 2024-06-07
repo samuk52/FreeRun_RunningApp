@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.insubria.freerun_runningapp.R
 import it.insubria.freerun_runningapp.Services.TrackingService
+import it.insubria.freerun_runningapp.Utilities.DataUtilities
 import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -43,6 +44,7 @@ class TrackingActivity : AppCompatActivity() {
 
     private lateinit var runDataUpdater: ExecutorService
     private lateinit var guiUtilities: GuiUtilities
+    private lateinit var dataUtilities: DataUtilities
 
     private lateinit var time: String
     private var km = 0f
@@ -66,6 +68,7 @@ class TrackingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_tracking)
 
         guiUtilities = GuiUtilities(this)
+        dataUtilities = DataUtilities()
 
         // recupero le varie TextView (tempo, chilometri e calorie)
         tvTime = findViewById(R.id.textViewTime)
@@ -136,7 +139,7 @@ class TrackingActivity : AppCompatActivity() {
     }
 
     private fun stopTrackingService(){
-        guiUtilities.openTrackingRecapActivity(time, km, calories, trackingService!!.getAvgPace(), serializeLatLngList(trackingService!!.getLocations()))
+        guiUtilities.openTrackingRecapActivity(time, km, calories, trackingService!!.getAvgPace(), dataUtilities.serializeLatLngList(trackingService!!.getLocations()))
         if(bound) {
             unbindService(serviceConnection)
             bound = false
@@ -200,17 +203,6 @@ class TrackingActivity : AppCompatActivity() {
         tvTime.text = time
         tvKilometers.text = String.format("%.2f", km)
         tvCalories.text = "$calories"
-    }
-
-    // metodo che presa in input una lista di oggetti LatLng, la serializza in una lista di stringhe
-    // questa operazione è necessaria in quando il metodo dell'intent che permette di recuperare
-    // un oggetto serializzato richiede che il device abbiamo come sdk minimo il 33.
-    private fun serializeLatLngList(listToSerialize: ArrayList<LatLng>): ArrayList<String>{
-        val list = arrayListOf<String>()
-        for(item in listToSerialize){
-            list.add("${item.latitude},${item.longitude}")
-        }
-        return list
     }
 
     // metodo che richiede i permessi per le notifiche

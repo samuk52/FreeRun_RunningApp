@@ -24,6 +24,7 @@ import it.insubria.freerun_runningapp.Fragments.ActivitiesFragment
 import it.insubria.freerun_runningapp.Fragments.EditProfileFragment
 import it.insubria.freerun_runningapp.Fragments.ProfileFragment
 import it.insubria.freerun_runningapp.Fragments.RunFragment
+import it.insubria.freerun_runningapp.Fragments.ShowRunDetailsFragment
 import it.insubria.freerun_runningapp.R
 
 // TODO creare metodi per apertura frammenti e metodi per apertura dei vari dialog e alert
@@ -115,6 +116,14 @@ class GuiUtilities(private val context: Context) {
         }
     }
 
+    fun openShowRunDetailsFragment(fragmentManager: FragmentManager, time: String, distance: String, calories: String, avgPace: String, locations: ArrayList<String>){
+        fragmentManager.commit {
+            setReorderingAllowed(true)
+            val showRunDetailsFragment = ShowRunDetailsFragment.newInstance(time, distance, calories, avgPace, locations)
+            replace(R.id.fragmentContainerView, showRunDetailsFragment)
+        }
+    }
+
     // -- METODI PER APRIRE I DIALOG e BANNER -- //
     fun showAlertDialog(message: String, positiveButtonMethod: () -> Unit){
         println("---- showAlertDialog ----")
@@ -147,6 +156,7 @@ class GuiUtilities(private val context: Context) {
         tvMessage.text = message
         // creo il dialog
         val dialog = MaterialAlertDialogBuilder(context).setView(view).show()
+        dialog.setCancelable(false) // impedisco il dialog venga chiuso quando si preme al di fuori di esso
         // gestisco quando viene premuto il pulsante di conferma
         view.findViewById<Button>(R.id.positiveButton).setOnClickListener {
             positiveButtonMethod()

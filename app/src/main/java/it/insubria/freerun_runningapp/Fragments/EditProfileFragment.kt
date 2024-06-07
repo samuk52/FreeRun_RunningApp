@@ -47,7 +47,7 @@ class EditProfileFragment : Fragment() {
             gender = it.getString(ARG_GENDER)
         }
         guiUtilities = GuiUtilities(requireActivity())
-        user = User.getInstance()
+        user = User.getInstance()!!
     }
 
     override fun onCreateView(

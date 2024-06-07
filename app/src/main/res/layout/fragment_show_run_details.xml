@@ -4,27 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.TrackingRecapActivity">
-
-    <Button
-        android:id="@+id/deleteTrackingButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".Fragments.ShowRunDetailsFragment">
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/saveTrackingButton"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deleteTrackingButton">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,7 +21,7 @@
             android:orientation="vertical">
 
             <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/mapRecap"
+                android:id="@+id/mapRunDetails"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
@@ -92,7 +81,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/recapTimeText"
+                        android:id="@+id/timeRunDetailsText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -129,7 +118,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/recapDistanceText"
+                            android:id="@+id/distanceRunDetailsText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="0,00"
@@ -139,10 +128,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
+                            android:layout_marginStart="4dp"
                             android:text="KM"
-                            android:layout_marginStart="4dp" />
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -167,7 +156,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/recapCaloriesText"
+                        android:id="@+id/caloriesRunDetailsText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -205,7 +194,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/avgPaceText"
+                            android:id="@+id/avgPaveRunDetailsText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="0"
@@ -215,9 +204,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="/KM"
                             android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:text="/KM" />
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -236,21 +225,6 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <Button
-        android:id="@+id/saveTrackingButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/SaveText"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.529" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

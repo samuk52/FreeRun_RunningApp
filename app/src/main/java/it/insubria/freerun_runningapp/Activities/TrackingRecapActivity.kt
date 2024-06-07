@@ -6,6 +6,7 @@ import android.graphics.Outline
 import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.Button
@@ -24,7 +25,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
 import it.insubria.freerun_runningapp.R
+import it.insubria.freerun_runningapp.Utilities.DataUtilities
 import it.insubria.freerun_runningapp.Utilities.GuiUtilities
+import it.insubria.freerun_runningapp.Utilities.MapUtilities
 import java.lang.IndexOutOfBoundsException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,6 +45,8 @@ class TrackingRecapActivity : AppCompatActivity() {
     private lateinit var locations: ArrayList<LatLng>
 
     private lateinit var guiUtilities: GuiUtilities
+    private lateinit var mapUtilities: MapUtilities
+    private lateinit var dataUtilities: DataUtilities
 
     private val callback = OnMapReadyCallback{googleMap ->
         /**
@@ -60,7 +65,7 @@ class TrackingRecapActivity : AppCompatActivity() {
             true
         }
         googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
-        drawPolyline()
+        mapUtilities.drawPolyline(googleMap, locations)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +74,8 @@ class TrackingRecapActivity : AppCompatActivity() {
 
         databaseManager = DatabaseManager()
         guiUtilities = GuiUtilities(this)
+        mapUtilities = MapUtilities(this)
+        dataUtilities = DataUtilities()
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapRecap) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
@@ -133,93 +140,13 @@ class TrackingRecapActivity : AppCompatActivity() {
         // di seguito il metodo getStringArrayListExtra mi restituisce una arrayList di stringhe in particolare
         // quella inviato dall'activity TrackingActivity, per ottenere una lista di oggetti LatLng, vado a deserializzare
         // la lista con il metodo di sotto creato
-        locations = deserializeLatLngList(intent.getStringArrayListExtra("locations") as ArrayList<String>)
+        locations = dataUtilities.deserializeLatLngList(intent.getStringArrayListExtra("locations") as ArrayList<String>)
 
         // aggiorno le componenti dell'interfaccio utente
         tvTime.text = time
         tvDistance.text = String.format("%.2f", distance)
-        tvAvgPace.text = getFormattedAvgPace(avgPace)
+        tvAvgPace.text = dataUtilities.getFormattedAvgPace(avgPace)
         tvCalories.text = "$calories"
 
     }
-
-    // metodo che restituisce il passo medio formattato
-    private fun getFormattedAvgPace(avgPace: Float): String{
-        try {
-            val avgPaceToFormat = String.format("%.2f", avgPace).split(".")
-            return "${avgPaceToFormat[0]}'${avgPaceToFormat[1]}\""
-        }catch (e: IndexOutOfBoundsException){
-            return "_'__\""
-        }
-    }
-
-    // metodo che disegna il percorso eseguito dall'utente durante la corsa.
-    private fun drawPolyline(){
-        // disegno il percorso
-        val polyline = googleMap.addPolyline(PolylineOptions()
-            .addAll(locations))
-        polyline.color = getColor(R.color.orange)
-        polyline.jointType = JointType.ROUND
-
-        // visulizzo i marker di inizio e fine corsa solo se è stata rilaveta almento una posizione
-        // senza questo controllo, nel caso in cui non è stata rilevata nessuna posizione
-        // viene sollevata una IndexOutBoundException dovuta all'accesso nella lista nella
-        // righe 156 e 174
-        if (locations.isNotEmpty()) {
-            // aggiungo il marker che indica l'inzio della corsa
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(locations[0])
-                    .icon(createCircleIcon(getColor(R.color.green)))
-            )
-
-            // aggiungo il marker che indica la fine della corsa.
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(locations[locations.lastIndex])
-                    .icon(createCircleIcon(getColor(R.color.red)))
-            )
-
-            // calcolo i limiti della polyline, essi mi servono per zoomare sul percorso effettauto
-            // dall'utente, per calcolare i limiti utilizzo un oggetto LatLngBounds.Builder()
-            // al quale aggiungo i punti della polyline e lui tramite il metodo build ci restituisce
-            // i limiti
-            val builder = LatLngBounds.builder()
-            //itero i punti della polyline e gli aggingo al builder
-            for (point in polyline.points) {
-                builder.include(point)
-            }
-            // recupero i limiti della polyline
-            val bounds = builder.build()
-
-            // sporto la telecamera di google maps sui limiti
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50))
-        }
-    }
-
-    // funzione che crea i circhi di inizio e fine corsa che verranno visualizzati sulla mappa
-    private fun createCircleIcon(color: Int): BitmapDescriptor{
-        val diameter = 30
-        val bitmap = Bitmap.createBitmap(diameter, diameter, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        val paint = Paint()
-        paint.color = color
-        paint.style = Paint.Style.FILL
-        canvas.drawCircle(diameter / 2f, diameter / 2f, diameter / 2f, paint)
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
-
-    // metodo che preso in input una lista di stringhe la deserializza in una lista
-    // di oggetti LatLng, questo metodo è necessario in quando il metodo dell'intent
-    // getSerializableExtra richiede che il device abbiamo come sdk minimo il 33, mentre
-    // io voglio che l'app funzioni anche con sdk minori.
-    private fun deserializeLatLngList(listToDeserialize: ArrayList<String>): ArrayList<LatLng>{
-        val list = arrayListOf<LatLng>()
-        for(item in listToDeserialize){
-            val latLngArray = item.split(",")
-            list.add(LatLng(latLngArray[0].toDouble(), latLngArray[1].toDouble()))
-        }
-        return list
-    }
-
 }

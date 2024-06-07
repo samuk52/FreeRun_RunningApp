@@ -83,4 +83,11 @@ class DatabaseManager {
             .collection("activities").get()
     }
 
+    fun removeUserRun(documentRunId: String): Task<Void> {
+        return db.collection("users").document(authManager.getCurrentUser()!!.uid)
+            .collection("activities")
+            .document(documentRunId)
+            .delete()
+    }
+
 }

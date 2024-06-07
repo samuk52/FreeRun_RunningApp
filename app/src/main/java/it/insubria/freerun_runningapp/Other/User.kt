@@ -69,8 +69,8 @@ class User (private val email: String, private var name: String, private var wei
             return user!!
         }
         @JvmStatic
-        fun getInstance(): User{
-            return user!!
+        fun getInstance(): User? {
+            return user
         }
         @JvmStatic
         fun reset(){

@@ -9,7 +9,7 @@ class CaloriesCounter {
     private var weight = 0f
 
     init {
-        weight = user.getWeight()
+        weight = user!!.getWeight()
         // DEBUG
         println("WEIGHT -> $weight")
     }

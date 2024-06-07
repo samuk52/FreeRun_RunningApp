@@ -57,14 +57,17 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initUser(){
-        databaseManager.getUserInfo().addOnSuccessListener { document ->
-            val email = authenticationManager.getCurrentUser()?.email ?: "NaN"
-            val name = document.getString("name") ?: "NaN"
-            val gender = document.getString("gender") ?: "NaN"
-            val weight = document.getDouble("weight")?.toFloat() ?: 0.0f
-            user = User.newInstance(email, name, weight, gender)
-            //DEBUG todo Remove
-            println("User init -> $user")
+        // recupero le informazioni dell'utente solo se non sono state ancora caricate.
+        if (User.getInstance() == null) {
+            databaseManager.getUserInfo().addOnSuccessListener { document ->
+                val email = authenticationManager.getCurrentUser()?.email ?: "NaN"
+                val name = document.getString("name") ?: "NaN"
+                val gender = document.getString("gender") ?: "NaN"
+                val weight = document.getDouble("weight")?.toFloat() ?: 0.0f
+                user = User.newInstance(email, name, weight, gender)
+                //DEBUG todo Remove
+                println("User init -> $user")
+            }
         }
     }
 }
