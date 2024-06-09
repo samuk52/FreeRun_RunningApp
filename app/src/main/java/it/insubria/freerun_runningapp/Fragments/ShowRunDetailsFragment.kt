@@ -15,6 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import it.insubria.freerun_runningapp.R
 import it.insubria.freerun_runningapp.Utilities.DataUtilities
+import it.insubria.freerun_runningapp.Utilities.GuiUtilities
 import it.insubria.freerun_runningapp.Utilities.MapUtilities
 import org.w3c.dom.Text
 
@@ -36,6 +37,7 @@ class ShowRunDetailsFragment : Fragment() {
 
     private lateinit var dataUtilities: DataUtilities
     private lateinit var mapUtilities: MapUtilities
+    private lateinit var guiUtilities: GuiUtilities
 
     private val callback = OnMapReadyCallback{googleMap ->
         /**
@@ -71,6 +73,7 @@ class ShowRunDetailsFragment : Fragment() {
 
         dataUtilities = DataUtilities()
         mapUtilities = MapUtilities(requireActivity())
+        guiUtilities = GuiUtilities(requireActivity())
 
         arguments?.let {
             time = it.getString(ARG_TIME)
@@ -104,6 +107,11 @@ class ShowRunDetailsFragment : Fragment() {
             }
         }
         mapContainer.clipToOutline = true
+
+        // gestisco quando viene premuta la textView per ritornare all'activites
+        view.findViewById<TextView>(R.id.returnToActivitiesButton).setOnClickListener {
+            guiUtilities.openActivitiesFragment(parentFragmentManager)
+        }
 
         updateUI(view)
 

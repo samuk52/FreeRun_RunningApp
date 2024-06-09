@@ -110,10 +110,9 @@ class SignUpActivity : AppCompatActivity() {
                 if(task.isSuccessful){
                     // se la registrazione è andata a buon fine, aggiungo il numero utente al database.
                     databaseManager.addNewUserToDB(name, weight, gender).addOnSuccessListener {
-                        // DEBUG todo rimuove
-                        Log.d("SignUpActivity", "added user document for $email")
+                        successSignUp()
                     }
-                    // TODO activiy per richiedere i vari permessi.
+                    // TODO activiy per richiedere i vari permessi, vedere se mettere o meno.
                 }else{
                     guiUtilities.showErrorBanner(
                         findViewById(android.R.id.content),
@@ -131,11 +130,11 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    // TODO vedere se rimuovere
+    // metodo che viene eseguito nel caso in cui il login è avvenuto con successo
     private fun successSignUp(){
-        // TODO implemetare, in particolare aprire le activity che chiedono il peso e l'altezza all'utente per il calcolo delle calorie
-        // DEBUG
-        Log.d("SignUp Activity", "Sign Up successfully")
+        // TODO vedere se aprire activity per chiedere i permessi o se chiederli quando apro la homeactivity
+        // se la registrazione è avvenuta correttamente apro la home activity
+        guiUtilities.openHomeActivity()
     }
 
 }

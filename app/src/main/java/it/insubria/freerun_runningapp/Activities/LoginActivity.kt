@@ -58,9 +58,7 @@ class LoginActivity : AppCompatActivity() {
         if(authResult != null){
             authResult.addOnCompleteListener { task ->
                 if (task.isSuccessful){
-                    // TODO apire activity home
-                    // DEBUG todo rimuovere
-                    Toast.makeText(this, "Login successfully", Toast.LENGTH_LONG).show()
+                    successLogin()
                 }else{
                     guiUtilities.showErrorBanner(
                         findViewById(android.R.id.content),
@@ -78,11 +76,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // TODO vedere se rimuovere
+    // metodo che viene eseguito nel caso in cui il login è avvenuto con successo
     private fun successLogin(){
-        // TODO implemetare, in particolare aprire le activity che chiedono il peso e l'altezza all'utente per il calcolo delle calorie
-        // DEBUG
-        Log.d("Login Activity", "Login successfully")
+        // se il login è avvenuto correttamente apro la home activity
+        guiUtilities.openHomeActivity()
     }
 
 }
