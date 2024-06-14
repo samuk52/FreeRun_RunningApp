@@ -57,24 +57,20 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        GuiUtilities.showProgressDialogFragment(supportFragmentManager)
-
     }
 
     private fun initUser(){
         // recupero le informazioni dell'utente solo se non sono state ancora caricate.
         if (User.getInstance() == null) {
+            // avvio il progress dialog fragment
+            GuiUtilities.showProgressDialogFragment(supportFragmentManager)
             databaseManager.getUserInfo().addOnSuccessListener { document ->
                 val email = authenticationManager.getCurrentUser()!!.email!!
                 val name = document.getString("name")!!
                 val gender = document.getString("gender")!!
                 val weight = document.getDouble("weight")!!.toFloat()
                 user = User.newInstance(email, name, weight, gender)
-                // TODO DEGUG remove
-                Toast.makeText(this, "$name, $gender, $weight, $email", Toast.LENGTH_LONG).show()
-                //DEBUG todo Remove
-                println("User init -> $user")
-                // chiudo il progress dialog fragment
+                // caricati correttamente i dati, chiudo il progress dialog fragment
                 GuiUtilities.closeProgressDialogFragment()
             }
         }
