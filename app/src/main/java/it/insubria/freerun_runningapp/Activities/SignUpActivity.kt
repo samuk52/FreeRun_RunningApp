@@ -137,7 +137,7 @@ class SignUpActivity : AppCompatActivity() {
     // metodo che viene eseguito nel caso in cui il login è avvenuto con successo
     private fun successSignUp(){
         // se la registrazione è avvenuta correttamente apro la home activity
-        guiUtilities.openHomeActivity()
+        guiUtilities.openHomeActivity(true)
     }
 
 }

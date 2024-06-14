@@ -83,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
     // metodo che viene eseguito nel caso in cui il login è avvenuto con successo
     private fun successLogin(){
         // se il login è avvenuto correttamente apro la home activity
-        guiUtilities.openHomeActivity()
+        guiUtilities.openHomeActivity(true)
     }
 
 }

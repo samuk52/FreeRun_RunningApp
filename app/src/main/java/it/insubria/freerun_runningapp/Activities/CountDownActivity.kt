@@ -53,7 +53,7 @@ class CountDownActivity : AppCompatActivity() {
 
         endActivityBtn.setOnClickListener {
             guiUtilities.showAlertDialog(resources.getString(R.string.EndActivtyMessage)){
-                guiUtilities.openHomeActivity()
+                guiUtilities.openHomeActivity(false)
             }
         }
 

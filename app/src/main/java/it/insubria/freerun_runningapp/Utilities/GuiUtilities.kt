@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.ContentInfoCompat.Flags
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -39,10 +40,20 @@ class GuiUtilities(private val context: Context) {
         context.startActivity(intent)
     }
 
-    fun openHomeActivity(){
+    // il parametro del metodo indica se l'activity va ricreata o meno
+    fun openHomeActivity(create: Boolean){
         val intent = Intent(context, HomeActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        if(create) { // se deve essere ricreata
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }else{
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            // impostando il seguente FLAG se l'activity è già in cima allo stack,
+            // (e dovrebbe esserlo in quanto sopra è stato dichiarato il FLAG CLER TOP
+            // il quale va a rimuovere dal backStack tutte le activity al di sopra) essa
+            // non verrà ricreata ma verrà semplicemente riportata in primo piano
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }
         context.startActivity(intent)
     }
 

@@ -1,5 +1,6 @@
 package it.insubria.freerun_runningapp.Activities
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Outline
@@ -98,7 +99,8 @@ class TrackingRecapActivity : AppCompatActivity() {
         // gestisco il pulsante che elimina la corsa effettuata
         findViewById<Button>(R.id.deleteTrackingButton).setOnClickListener {
             guiUtilities.showAlertDialog(resources.getString(R.string.DeleteActivityMessage)){
-                guiUtilities.openHomeActivity()
+                guiUtilities.openHomeActivity(false)
+                finish()
             }
         }
 
@@ -127,7 +129,8 @@ class TrackingRecapActivity : AppCompatActivity() {
     private fun saveTracking(){
         val currentDate = SimpleDateFormat("dd/MM/yy").format(Date()) // recupero la data odierna
         databaseManager.addNewRun(currentDate, tvTime.text.toString(), tvDistance.text.toString(), tvAvgPace.text.toString(), tvCalories.text.toString(), locations)
-        guiUtilities.openHomeActivity()
+        guiUtilities.openHomeActivity(false)
+        finish()
     }
 
     // metodo che aggiorna le componenti dell'interfaccia utente

@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         // se l'utente ha già effettuato l'accesso apro l'home activity
         if(authManager.getCurrentUser() != null){
-            guiUtilities.openHomeActivity()
+            guiUtilities.openHomeActivity(true)
         }
 
         // gestisco il pulsante per la registrazione.
