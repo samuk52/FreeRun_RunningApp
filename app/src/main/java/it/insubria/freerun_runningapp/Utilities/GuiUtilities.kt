@@ -23,6 +23,7 @@ import it.insubria.freerun_runningapp.Activities.TrackingRecapActivity
 import it.insubria.freerun_runningapp.Fragments.ActivitiesFragment
 import it.insubria.freerun_runningapp.Fragments.EditProfileFragment
 import it.insubria.freerun_runningapp.Fragments.ProfileFragment
+import it.insubria.freerun_runningapp.Fragments.ProgressDialogFragment
 import it.insubria.freerun_runningapp.Fragments.RunFragment
 import it.insubria.freerun_runningapp.Fragments.ShowRunDetailsFragment
 import it.insubria.freerun_runningapp.R
@@ -205,4 +206,25 @@ class GuiUtilities(private val context: Context) {
         }, 3000)
     }
 
+    companion object{
+
+        private val progressDialogFragment = ProgressDialogFragment()
+
+        // metodo che apre il progressDialogFragment
+        fun showProgressDialogFragment(fragmentManager: FragmentManager){
+            // se non è visibile, mostro il fragment dialog
+            if(!progressDialogFragment.isVisible) {
+                progressDialogFragment.show(fragmentManager, "progress_fragment")
+                // DEBUG todo remove
+                println("-- show progress fragment dialog --")
+            }
+        }
+
+        // metodo che chiude il progressDialogFragment
+        fun closeProgressDialogFragment(){
+            if (progressDialogFragment.isVisible) {
+                progressDialogFragment.dismiss()
+            }
+        }
+    }
 }

@@ -54,7 +54,9 @@ class SignUpActivity : AppCompatActivity() {
 
         // gestisco il pulsante di chiusura del form di registrazione
         findViewById<Button>(R.id.closeSignUpButton).setOnClickListener{
-            guiUtilities.openMainActivity()
+            // chiudo l'activity con il metodo finish() in modo tale da poter
+            // tornare nella precedente activity del backstack.
+            finish()
         }
 
         // gestisco quando viene premuta la textView per le informazioni della password
@@ -75,6 +77,9 @@ class SignUpActivity : AppCompatActivity() {
 
         // gestisco il pulsante di registrazione
         findViewById<Button>(R.id.signUpButton).setOnClickListener {
+            // apro il fragment che mostra la progress bar del caricamento
+            GuiUtilities.showProgressDialogFragment(supportFragmentManager)
+
             // recupero quale radioButton è stato premuto
             val genderRadioButton = findViewById<RadioButton>(radioGroup.checkedRadioButtonId) // recupero il radio button selezionato
             var gender = ""
@@ -112,7 +117,6 @@ class SignUpActivity : AppCompatActivity() {
                     databaseManager.addNewUserToDB(name, weight, gender).addOnSuccessListener {
                         successSignUp()
                     }
-                    // TODO activiy per richiedere i vari permessi, vedere se mettere o meno.
                 }else{
                     guiUtilities.showErrorBanner(
                         findViewById(android.R.id.content),
@@ -132,7 +136,6 @@ class SignUpActivity : AppCompatActivity() {
 
     // metodo che viene eseguito nel caso in cui il login è avvenuto con successo
     private fun successSignUp(){
-        // TODO vedere se aprire activity per chiedere i permessi o se chiederli quando apro la homeactivity
         // se la registrazione è avvenuta correttamente apro la home activity
         guiUtilities.openHomeActivity()
     }

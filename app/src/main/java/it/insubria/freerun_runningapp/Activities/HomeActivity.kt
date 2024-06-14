@@ -3,11 +3,13 @@ package it.insubria.freerun_runningapp.Activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract.RawContacts.Data
+import android.widget.Toast
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import it.insubria.freerun_runningapp.Fragments.ActivitiesFragment
 import it.insubria.freerun_runningapp.Fragments.ProfileFragment
+import it.insubria.freerun_runningapp.Fragments.ProgressDialogFragment
 import it.insubria.freerun_runningapp.Fragments.RunFragment
 import it.insubria.freerun_runningapp.Managers.AuthenticationManager
 import it.insubria.freerun_runningapp.Managers.DatabaseManager
@@ -54,19 +56,26 @@ class HomeActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        GuiUtilities.showProgressDialogFragment(supportFragmentManager)
+
     }
 
     private fun initUser(){
         // recupero le informazioni dell'utente solo se non sono state ancora caricate.
         if (User.getInstance() == null) {
             databaseManager.getUserInfo().addOnSuccessListener { document ->
-                val email = authenticationManager.getCurrentUser()?.email ?: "NaN"
-                val name = document.getString("name") ?: "NaN"
-                val gender = document.getString("gender") ?: "NaN"
-                val weight = document.getDouble("weight")?.toFloat() ?: 0.0f
+                val email = authenticationManager.getCurrentUser()!!.email!!
+                val name = document.getString("name")!!
+                val gender = document.getString("gender")!!
+                val weight = document.getDouble("weight")!!.toFloat()
                 user = User.newInstance(email, name, weight, gender)
+                // TODO DEGUG remove
+                Toast.makeText(this, "$name, $gender, $weight, $email", Toast.LENGTH_LONG).show()
                 //DEBUG todo Remove
                 println("User init -> $user")
+                // chiudo il progress dialog fragment
+                GuiUtilities.closeProgressDialogFragment()
             }
         }
     }

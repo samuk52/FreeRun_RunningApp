@@ -35,11 +35,15 @@ class LoginActivity : AppCompatActivity() {
 
         // gestisco il pulsante di chiusura del form di login
         findViewById<Button>(R.id.closeLogInButton).setOnClickListener{
-            guiUtilities.openMainActivity()
+            // chiudo l'activity con il metodo finish() in modo tale da poter
+            // tornare nella precedente activity del backstack.
+            finish()
         }
 
         // gestisco il pulsante di log in
         findViewById<Button>(R.id.logInButton).setOnClickListener {
+            // apro il fragment che mostra la progress bar del caricamento
+            GuiUtilities.showProgressDialogFragment(supportFragmentManager)
             logIn(
                 emailTextField.editText?.text.toString(),
                 passwordTextField.editText?.text.toString()
