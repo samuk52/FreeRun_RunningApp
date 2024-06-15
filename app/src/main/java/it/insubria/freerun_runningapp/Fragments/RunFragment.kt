@@ -31,16 +31,6 @@ class RunFragment : Fragment(){
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var guiUtilities: GuiUtilities
 
-    // riceve i rusultati dell'activity che richiede i permessi della localizzazione invocata nel metodo getCurrentPosition
-    private val locationPermissionRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()){isGranted ->
-        if(isGranted){
-            // se i permessi della localizzazione sono stati autorizzati, mostro l'indicatore della posizione corrente sulla mappa
-            if(ContextCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                getCurrentPosition(false)
-            }
-        }
-    }
-
     private val callback = OnMapReadyCallback {googleMap ->
         /**
          * Manipulates the map once available.
@@ -81,6 +71,7 @@ class RunFragment : Fragment(){
 
     }
 
+    // TODO vedere se ripristinare ramo else
     private fun getCurrentPosition(fromMapReadyCallback: Boolean){
         // verifico se l'utente ha dato i permessi per la localizzazione, in caso contrario
         // invio la richiesta per i permessi
@@ -104,13 +95,6 @@ class RunFragment : Fragment(){
                     // nuovo la posizione
                     getCurrentPosition(false)
                 }
-            }
-        }else{ // se l'utente non ha dato i permessi per la localizzazione, essi vengono richiesto
-            // se il metodo viene invocato dalla MapReadyCallback, questo perchè l'eventuale richiesta
-            // dei permessi deve avvenire solo se il metodo è stato invocato dalla callback della mappa
-            // che indica che essa è pronta all'uso, e non dal risultato dell'ativity che richiede i permessi
-            if(fromMapReadyCallback) {
-                locationPermissionRequest.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
     }

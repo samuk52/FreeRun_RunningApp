@@ -46,9 +46,17 @@
     <string name="EditText">Edit</string>
     <string name="LogOutText">Log Out</string>
     <string name="LogOutMessage">Want to log out from FreeRun ?</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="DoneText">Done</string>
     <string name="WorkoutDetails">Workout Details</string>
     <string name="DeleteRunMessage">Do you want to eliminate the run ?</string>
     <string name="DeleteText">Delete</string>
+    <string name="LocationPermissionsTitle">Location permissions</string>
+    <string name="LocationPermissionsText">Location permission are required to allow FreeRun to track your location during your run, if not granted you will not be able to view your route during the run, and if your device does not have motion sensors, you will also not be able to track other data such as distance and kilocalories.</string>
+    <string name="ContinueText">Continue</string>
+    <string name="ActivityRecognitionPermissionTitle">Activity recognition permission</string>
+    <string name="ActivityRecognitionPermissionText">Permissions for activity recognition are required to allow FreeRun to track the motor activity for proper calculation of the distance covered. If not granted, the distance run is calculated less accurately using location.</string>
+    <string name="NotificationPermissionTitle">Notification permission</string>
+    <string name="NotificationPermissionText">Notification permission are required to allow FreeRun to notify the start of each run, and to allow the user to view the run data even when the device is in the background.</string>
+    <string name="ActivityReconigtionInfoText">If the device does not have sensors for detecting motor activity, the distance traveled will be calculated using the location, therefore it is recommended to grant location permissions.</string>
+    <string name="NoActivitySensorTitle">Activity sensor not detected</string>
 </resources>

@@ -22,7 +22,11 @@ import it.insubria.freerun_runningapp.Activities.SignUpActivity
 import it.insubria.freerun_runningapp.Activities.TrackingActivity
 import it.insubria.freerun_runningapp.Activities.TrackingRecapActivity
 import it.insubria.freerun_runningapp.Fragments.ActivitiesFragment
+import it.insubria.freerun_runningapp.Fragments.ActivityRecognitionPermissionFragment
+import it.insubria.freerun_runningapp.Fragments.ActivitySensorNotDetectedFragment
 import it.insubria.freerun_runningapp.Fragments.EditProfileFragment
+import it.insubria.freerun_runningapp.Fragments.LocationPermissionFragment
+import it.insubria.freerun_runningapp.Fragments.NotificationPermissionFragment
 import it.insubria.freerun_runningapp.Fragments.ProfileFragment
 import it.insubria.freerun_runningapp.Fragments.ProgressDialogFragment
 import it.insubria.freerun_runningapp.Fragments.RunFragment
@@ -33,10 +37,11 @@ import it.insubria.freerun_runningapp.R
 class GuiUtilities(private val context: Context) {
 
     // -- METODI PER APRIRE LE ACTIVITY -- //
-    fun openMainActivity(){
+    fun openMainActivity(requestPermission: Boolean){
         val intent = Intent(context, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.putExtra("requestPermission", requestPermission)
         context.startActivity(intent)
     }
 
@@ -57,13 +62,15 @@ class GuiUtilities(private val context: Context) {
         context.startActivity(intent)
     }
 
-    fun openSignUpActivity(){
+    fun openSignUpActivity(requestPermission: Boolean){
         val intent = Intent(context, SignUpActivity::class.java)
+        intent.putExtra("requestPermission", requestPermission)
         context.startActivity(intent)
     }
 
-    fun openLoginActivity(){
+    fun openLoginActivity(requestPermission: Boolean){
         val intent = Intent(context, LoginActivity::class.java)
+        intent.putExtra("requestPermission", requestPermission)
         context.startActivity(intent)
     }
 
@@ -217,25 +224,42 @@ class GuiUtilities(private val context: Context) {
         }, 3000)
     }
 
+    // metodo che apre il fragment per la richiesta dei permessi di posizione
+    fun showLocationPermissionFragment(fragmentManager: FragmentManager){
+        val locationPermissionFragment = LocationPermissionFragment()
+        locationPermissionFragment.show(fragmentManager, "location_permission_fragment")
+    }
+
+    // metodo che apre il fragment per la richiesta dei permessi delle notifiche
+    fun showNotificationPermissionFragment(fragmentManager: FragmentManager){
+        val notificationPermissionFragment = NotificationPermissionFragment()
+        notificationPermissionFragment.show(fragmentManager, "notification_permission_fragment")
+    }
+
+    // metodo che apre il fragment per la richiesta dei permessi per il rilevamento dell'attività
+    fun showActivityRecognitionPermissionFragment(fragmentManager: FragmentManager){
+        val activityRecognitionPermissionFragment = ActivityRecognitionPermissionFragment()
+        activityRecognitionPermissionFragment.show(fragmentManager, "activity_recognition_permission_fragment")
+    }
+
+    // metodo che apre il frammento che avvisa l'utente che il suo dispositivo non possiede il sensore che traccia i passi.
+    fun showActivitySensorNotDetectedFragment(fragmentManager: FragmentManager){
+        val activitySensorNotDetectedFragment = ActivitySensorNotDetectedFragment()
+        activitySensorNotDetectedFragment.show(fragmentManager, "activity_sensor_not_detected_fragment")
+    }
+
     companion object{
 
         private val progressDialogFragment = ProgressDialogFragment()
 
         // metodo che apre il progressDialogFragment
         fun showProgressDialogFragment(fragmentManager: FragmentManager){
-            // se non è visibile, mostro il fragment dialog
-            if(!progressDialogFragment.isVisible) {
-                progressDialogFragment.show(fragmentManager, "progress_fragment")
-                // DEBUG todo remove
-                println("-- show progress fragment dialog --")
-            }
+            progressDialogFragment.show(fragmentManager, "progress_fragment")
         }
 
         // metodo che chiude il progressDialogFragment
         fun closeProgressDialogFragment(){
-            if (progressDialogFragment.isVisible) {
-                progressDialogFragment.dismiss()
-            }
+            progressDialogFragment.dismiss()
         }
     }
 }

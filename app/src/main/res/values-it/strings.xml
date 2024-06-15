@@ -51,4 +51,13 @@
     <string name="WorkoutDetails">Dettagli Allenamento</string>
     <string name="DeleteRunMessage">Vuoi eliminare la corsa ?</string>
     <string name="DeleteText">Delete</string>
+    <string name="LocationPermissionsTitle">Permessi di localizzazione</string>
+    <string name="LocationPermissionsText">I permessi di localizzazione vengono richiesti per consenitire a FreeRun di tracciare la tua posizione durante la corsa, se non concessi non sarà possibile visualizzare il percorso svolto durante la corsa, inoltre se il dispositivo non presenta i sensori di movimento, non sarà nemmeno possibile tracciare gli altri dati, come distanza e kilocalorie.</string>
+    <string name="ContinueText">Continua</string>
+    <string name="ActivityRecognitionPermissionTitle">Permessi per il riconoscimento dell\'attività</string>
+    <string name="ActivityRecognitionPermissionText">I permessi per il riconoscimento dell\'attività vengono richiesti per consentire a FreeRun il tracciamento dell\'attività motoria, per un corretto calcolo della distanza percorsa. Se non concessi la distanza percorsa viene calcolata in maniera meno accurata usando la posizione.</string>
+    <string name="NotificationPermissionTitle">Permessi per le notifiche</string>
+    <string name="NotificationPermissionText">I permessi per le notifiche vengono richiesti per permettere a FreeRun di notificare l\'inizio di ogni corsa, e per permettere all\'utente di visionare i dati della corsa anche quando il dispositivo è il background.</string>
+    <string name="ActivityReconigtionInfoText">Se il dispositivo non ha i sensori per il rilevamento dell\'attività motoria, la distanza percorsa verrà calcolata usando la posizione, di conseguenza si consiglia di concedere i permessi per la posizione.</string>
+    <string name="NoActivitySensorTitle">Sensore di attività non rilevato</string>
 </resources>

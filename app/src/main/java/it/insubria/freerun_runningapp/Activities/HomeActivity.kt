@@ -1,9 +1,12 @@
 package it.insubria.freerun_runningapp.Activities
 
+import android.Manifest
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract.RawContacts.Data
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -56,7 +59,6 @@ class HomeActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
     }
 
     private fun initUser(){
@@ -75,4 +77,5 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
+
 }

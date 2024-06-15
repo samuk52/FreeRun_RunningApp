@@ -118,6 +118,7 @@ class SignUpActivity : AppCompatActivity() {
                         successSignUp()
                     }
                 }else{
+                    GuiUtilities.closeProgressDialogFragment()
                     guiUtilities.showErrorBanner(
                         findViewById(android.R.id.content),
                         resources.getString(R.string.ErrorSignUpTitle),
@@ -126,6 +127,7 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
         }else{
+            GuiUtilities.closeProgressDialogFragment()
             guiUtilities.showErrorBanner(
                 findViewById(android.R.id.content),
                 resources.getString(R.string.ErrorSignUpTitle),
@@ -137,7 +139,14 @@ class SignUpActivity : AppCompatActivity() {
     // metodo che viene eseguito nel caso in cui il login è avvenuto con successo
     private fun successSignUp(){
         // se la registrazione è avvenuta correttamente apro la home activity
-        guiUtilities.openHomeActivity(true)
+        // guiUtilities.openHomeActivity(true)
+        // apro il fragment per la richiesta dei permessi di posizione
+        val openFragmentPermission = intent.getBooleanExtra("requestPermission", false)
+        if(openFragmentPermission) {
+            guiUtilities.showLocationPermissionFragment(supportFragmentManager)
+        }else{ // se non devo aprire il frammento per la richiesta dei permessi, apro la home activity.
+            guiUtilities.openHomeActivity(true)
+        }
     }
 
 }

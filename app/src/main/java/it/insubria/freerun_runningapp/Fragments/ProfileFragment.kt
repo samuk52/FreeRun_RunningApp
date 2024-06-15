@@ -190,6 +190,6 @@ class ProfileFragment : Fragment() {
         // si possono recuperare correttamente i dati dell'utente
         User.reset()
         authManager.signOut()
-        guiUtilities.openMainActivity()
+        guiUtilities.openMainActivity(false)
     }
 }

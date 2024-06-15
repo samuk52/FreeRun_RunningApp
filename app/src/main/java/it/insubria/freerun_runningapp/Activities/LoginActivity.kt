@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 import it.insubria.freerun_runningapp.R
 import it.insubria.freerun_runningapp.Utilities.GuiUtilities
@@ -64,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful){
                     successLogin()
                 }else{
+                    GuiUtilities.closeProgressDialogFragment()
                     guiUtilities.showErrorBanner(
                         findViewById(android.R.id.content),
                         resources.getString(R.string.ErrorLogInTitle),
@@ -72,6 +74,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }else{
+            GuiUtilities.closeProgressDialogFragment()
             guiUtilities.showErrorBanner(
                 findViewById(android.R.id.content),
                 resources.getString(R.string.ErrorLogInTitle),
@@ -83,7 +86,13 @@ class LoginActivity : AppCompatActivity() {
     // metodo che viene eseguito nel caso in cui il login è avvenuto con successo
     private fun successLogin(){
         // se il login è avvenuto correttamente apro la home activity
-        guiUtilities.openHomeActivity(true)
+        // guiUtilities.openHomeActivity(true)
+        // apro il fragment per la richiesta dei permessi di posizione
+        val openFragmentPermission = intent.getBooleanExtra("requestPermission", false)
+        if(openFragmentPermission) {
+            guiUtilities.showLocationPermissionFragment(supportFragmentManager)
+        }else{ // se non devo aprire il frammento per la richiesta dei permessi, apro la home activity.
+            guiUtilities.openHomeActivity(true)
+        }
     }
-
 }

@@ -103,10 +103,6 @@ class TrackingActivity : AppCompatActivity() {
 
         handleOnBackPressed()
 
-        // richiesta dei permessi
-        requestNotificationPermission()
-        requestActivityRecognitionPermission()
-
         // start del traking service
         startTrackingService()
 
@@ -205,23 +201,4 @@ class TrackingActivity : AppCompatActivity() {
         tvCalories.text = "$calories"
     }
 
-    // metodo che richiede i permessi per le notifiche
-    private fun requestNotificationPermission(){
-        // i permessi delle notifiche, devono essere richiesti solo se la versione android del device
-        // è superiore ad ANDROID TIRAMISU
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
-        }
-    }
-
-    // metodo che richiede i permessi per l'attività fisica
-    private fun requestActivityRecognitionPermission(){
-        if (Build.VERSION.SDK_INT >= 29) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
-                1
-            )
-        }
-    }
 }
