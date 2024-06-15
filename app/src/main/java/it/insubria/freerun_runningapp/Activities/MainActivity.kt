@@ -21,12 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         // recupero l'informazione aggiuntiva passata all'activity, la quale verrà propagata alle activity
         // login e signUp per determinare se devono o meno aprire i fragment per la richiesta dei permessi.
-        val requestPermission = intent.getBooleanExtra("requestPermission", true)
-
-        // se l'utente ha già effettuato l'accesso apro l'home activity
-        if(authManager.getCurrentUser() != null){
-            guiUtilities.openHomeActivity(true)
-        }
+        val requestPermission = intent.getBooleanExtra("requestPermission", false)
 
         // gestisco il pulsante per la registrazione.
         findViewById<Button>(R.id.welcomeSignUpButton).setOnClickListener {
