@@ -21,7 +21,7 @@
     <string name="WeightInfoMessage">Durante la registrazione, viene richiesto il peso per calcolare correttamente le calorie consumate durante la corsa.</string>
     <string name="WeightInfoTitle">Peso</string>
     <string name="ActivityText">Attività</string>
-    <string name="RunText">Run</string>
+    <string name="RunText">Corsa</string>
     <string name="ProfileText">Profilo</string>
     <string name="StartRunText">INIZIA</string>
     <string name="EndActivityBtn">Termina attività</string>
@@ -60,4 +60,6 @@
     <string name="NotificationPermissionText">I permessi per le notifiche vengono richiesti per permettere a FreeRun di notificare l\'inizio di ogni corsa, e per permettere all\'utente di visionare i dati della corsa anche quando il dispositivo è il background.</string>
     <string name="ActivityReconigtionInfoText">Se il dispositivo non ha i sensori per il rilevamento dell\'attività motoria, la distanza percorsa verrà calcolata usando la posizione, di conseguenza si consiglia di concedere i permessi per la posizione.</string>
     <string name="NoActivitySensorTitle">Sensore di attività non rilevato</string>
+    <string name="NoRunsText">Nessuna corsa trovata</string>
+    <string name="NoRunsMessage">Vai nella sezione corsa e iniziane una ora!</string>
 </resources>

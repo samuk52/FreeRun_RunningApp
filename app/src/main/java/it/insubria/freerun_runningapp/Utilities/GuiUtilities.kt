@@ -26,6 +26,7 @@ import it.insubria.freerun_runningapp.Fragments.ActivityRecognitionPermissionFra
 import it.insubria.freerun_runningapp.Fragments.ActivitySensorNotDetectedFragment
 import it.insubria.freerun_runningapp.Fragments.EditProfileFragment
 import it.insubria.freerun_runningapp.Fragments.LocationPermissionFragment
+import it.insubria.freerun_runningapp.Fragments.NoActivitiesFoundFragment
 import it.insubria.freerun_runningapp.Fragments.NotificationPermissionFragment
 import it.insubria.freerun_runningapp.Fragments.ProfileFragment
 import it.insubria.freerun_runningapp.Fragments.ProgressDialogFragment
@@ -140,6 +141,13 @@ class GuiUtilities(private val context: Context) {
             setReorderingAllowed(true)
             val showRunDetailsFragment = ShowRunDetailsFragment.newInstance(time, distance, calories, avgPace, locations)
             replace(R.id.fragmentContainerView, showRunDetailsFragment)
+        }
+    }
+
+    fun openNoActivitiesFoundFragment(fragmentManager: FragmentManager){
+        fragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<NoActivitiesFoundFragment>(R.id.fragmentContainerView)
         }
     }
 

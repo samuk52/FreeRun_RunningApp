@@ -71,4 +71,8 @@ class CustomAdapter(private val recyclerViewClickInterface: RecyclerViewClickInt
         notifyItemChanged(position)
     }
 
+    fun runsIsEmpty(): Boolean{
+        return runs.isEmpty()
+    }
+
 }

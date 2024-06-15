@@ -59,4 +59,6 @@
     <string name="NotificationPermissionText">Notification permission are required to allow FreeRun to notify the start of each run, and to allow the user to view the run data even when the device is in the background.</string>
     <string name="ActivityReconigtionInfoText">If the device does not have sensors for detecting motor activity, the distance traveled will be calculated using the location, therefore it is recommended to grant location permissions.</string>
     <string name="NoActivitySensorTitle">Activity sensor not detected</string>
+    <string name="NoRunsText">No runs found</string>
+    <string name="NoRunsMessage">Go to the running section and start one now!</string>
 </resources>
